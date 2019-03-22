@@ -8,8 +8,8 @@ import tensorflow as tf
 from keras import backend as K
 from keras.models import Sequential, load_model
 from keras.utils import multi_gpu_model
-from keras.layers import Dense, Activation, Embedding, Dropout, TimeDistributed
-from keras.layers import LSTM, Multiply, Merge
+from keras.layers import Dense, Activation, Embedding, Dropout, TimeDistributed, Lambda
+from keras.layers import LSTM, Multiply, Merge, add, subtract, Add, Subtract, Concatenate
 from keras.optimizers import Adam, Adagrad
 from keras.utils import to_categorical, plot_model
 from keras.callbacks import ModelCheckpoint
@@ -22,8 +22,9 @@ from keras.callbacks import Callback
 from sklearn.metrics import confusion_matrix, f1_score, precision_score, recall_score
 import pickle
 
-def customloss(y):
- return backend.l2_normalize(y,axis=None)
+def customloss(y_pred,y_true):
+ return y_pred-y_true
+ #return K.l2_normalize(y_pred,axis=1)
  
 
 
@@ -53,13 +54,13 @@ metrics = Metrics()
 
 model = dict()
 
-with open('../data/subjects', 'r') as f:
+with open('../data/subjects_small', 'r') as f:
     subs = f.read()
 
-with open('../data/relations', 'r') as f:
+with open('../data/relations_small', 'r') as f:
     rels = f.read()
 	
-with open('../data/objects', 'r') as f:
+with open('../data/objects_small', 'r') as f:
     obs = f.read()
 
 from string import punctuation
@@ -114,35 +115,37 @@ for each in obs:
 
 from collections import Counter
 
-'''
-claim_lens = Counter([len(x) for x in claim_ints])
-sent_lens = Counter([len(x) for x in sent_ints])
-print("Zero-length sentences: {}".format(sent_lens[0]))
-print("Maximum sentence length: {}".format(max(sent_lens)))
+sub_lens = Counter([len(x) for x in sub_ints])
+rel_lens = Counter([len(x) for x in rel_ints])
+ob_lens = Counter([len(x) for x in ob_ints])
+print("Zero-length sub {}".format(sub_lens[0]))
+print("Maximum sub length: {}".format(max(sub_lens)))
 
-print("Zero-length claims: {}".format(claim_lens[0]))
-print("Maximum claim length: {}".format(max(claim_lens)))
+print("Zero-length rel: {}".format(rel_lens[0]))
+print("Maximum rel length: {}".format(max(rel_lens)))
+
+print("Zero-length obj: {}".format(ob_lens[0]))
+print("Maximum obj length: {}".format(max(ob_lens)))
+
 
 # Filter out that review with 0 length
 #claim_ints = [r for r in claim_ints if len(r) > 0]
 #sent_ints = [r[0:500] for r in sent_ints if len(r) > 0]
 
-print(claim_ints[0])
 
-tc = []
 ts = []
-tl = []
+tr = []
+to = []
 
-for i in range(len(labels)):
- if len(claim_ints[i])*len(sent_ints[i]) > 0:
-  tc.append(claim_ints[i])
-  ts.append(sent_ints[i])
-  tl.append(labels[i])
+for i in range(len(subs)):
+ if len(sub_ints[i])*len(rel_ints[i])*len(ob_ints[i]) > 0:
+  ts.append(sub_ints[i])
+  tr.append(rel_ints[i])
+  to.append(ob_ints[i])
 
-claim_ints = np.array(tc)
-sent_ints = np.array(ts)
-labels = np.array(tl)
-'''
+sub_ints = np.array(ts)
+rel_ints = np.array(tr)
+ob_ints = np.array(to)
 
 
 from collections import Counter
@@ -183,7 +186,7 @@ for i, row in enumerate(ob_ints):
 
 split_frac = 0.7
 
-split_index = int(split_frac * len(claim_features))
+split_index = int(split_frac * len(sub_features))
 
 train_sub, val_sub = sub_features[:split_index], sub_features[split_index:]
 train_rel, val_rel = rel_features[:split_index], rel_features[split_index:]
@@ -317,16 +320,15 @@ lstm3.add(LSTM(lstm_out, return_sequences=False, input_shape=(mx_ob, embed_size)
 #model2.add(TimeDistributed(Dense(1)))  
 if use_dropout:
     lstm3.add(Dropout(0.5))
-lstm3.add(Dense(lstm_out, activation='sigmoid', name='out2'))
+lstm3.add(Dense(lstm_out, activation='sigmoid', name='out3'))
+lstm3.add(Lambda(lambda x: x * -1))
 
 model = Sequential()
-model.add(Merge([Merge([model1, model2], mode='add'),model3], mode='sub'))
-#model.add(Dense(600))
-#model.add(Dense(600))
-#model.add(Dense(300))
-#model.add(Dense(100))
-#model.add(Merge([model1, model2], mode='cos', dot_axes=1))
-#model.add(Dense(3, activation = 'softmax'))
+#model = Add()([lstm1,lstm2])
+#model = Subtract()([model,lstm3])
+model.add(Merge([Merge([lstm1, lstm2], mode='sum'),lstm3], mode='sum'))
+model.add(Lambda(lambda x: K.sum(x,axis=1),output_shape =[1]))
+#model.add(Merge([lstm1, lstm2], mode='sum'))
 # model = Multiply()([model1.get_layer('out1').output,model2.get_layer('out2').output])
 
 # model.add(TimeDistributed(Dense(vocabulary)))
@@ -346,8 +348,8 @@ print(lstm3.summary())
 # checkpointer = ModelCheckpoint(filepath=data_path + '/model-{epoch:02d}.hdf5', verbose=1)
 num_epochs = 100
 plot_model(parallel_model, to_file='model.png')
-parallel_model.fit(x=[train_sub_e, train_rel_e,train_ob_e], batch_size=64, epochs=num_epochs,
-               validation_data=([val_sub_e,val_rel_e,val_ob_e]))
+parallel_model.fit(x=[train_sub_e, train_rel_e,train_ob_e],y = [0]*len(train_sub_e), batch_size=64, epochs=num_epochs)
+#               validation_data=([val_sub_e,val_rel_e,val_ob_e],[0]*len(val_sub_e)))
 
 
 
