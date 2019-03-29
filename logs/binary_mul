@@ -1,0 +1,47 @@
+Train on 17998 samples, validate on 2000 samples
+Epoch 1/100
+2019-03-29 17:54:21.302665: I tensorflow/core/platform/cpu_feature_guard.cc:137] Your CPU supports instructions that this TensorFlow binary was not compiled to use: SSE4.1 SSE4.2 AVX AVX2 FMA
+2019-03-29 17:54:21.575197: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1030] Found device 0 with properties: 
+name: GeForce GTX 1080 Ti major: 6 minor: 1 memoryClockRate(GHz): 1.62
+pciBusID: 0000:03:00.0
+totalMemory: 10.92GiB freeMemory: 10.76GiB
+2019-03-29 17:54:21.575252: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1120] Creating TensorFlow device (/device:GPU:0) -> (device: 0, name: GeForce GTX 1080 Ti, pci bus id: 0000:03:00.0, compute capability: 6.1)
+17998/17998 [==============================] - 28s 2ms/step - loss: 0.6299 - acc: 0.6362 - val_loss: 0.6895 - val_acc: 0.5885
+Epoch 2/100
+17998/17998 [==============================] - 25s 1ms/step - loss: 0.5302 - acc: 0.7145 - val_loss: 0.5999 - val_acc: 0.5855
+Epoch 3/100
+17998/17998 [==============================] - 25s 1ms/step - loss: 0.4744 - acc: 0.7477 - val_loss: 0.6024 - val_acc: 0.5625
+Epoch 4/100
+17998/17998 [==============================] - 24s 1ms/step - loss: 0.4210 - acc: 0.7880 - val_loss: 0.5391 - val_acc: 0.6615
+Epoch 5/100
+17998/17998 [==============================] - 24s 1ms/step - loss: 0.3663 - acc: 0.8271 - val_loss: 0.4281 - val_acc: 0.7775
+Epoch 6/100
+17998/17998 [==============================] - 23s 1ms/step - loss: 0.3228 - acc: 0.8569 - val_loss: 0.4245 - val_acc: 0.7830
+Epoch 7/100
+17998/17998 [==============================] - 24s 1ms/step - loss: 0.2860 - acc: 0.8758 - val_loss: 0.4359 - val_acc: 0.7895
+Epoch 8/100
+17998/17998 [==============================] - 24s 1ms/step - loss: 0.2584 - acc: 0.8914 - val_loss: 0.3908 - val_acc: 0.8165
+Epoch 9/100
+17998/17998 [==============================] - 24s 1ms/step - loss: 0.2345 - acc: 0.9015 - val_loss: 0.3912 - val_acc: 0.8175
+Epoch 10/100
+17998/17998 [==============================] - 24s 1ms/step - loss: 0.2164 - acc: 0.9119 - val_loss: 0.4932 - val_acc: 0.7765
+Epoch 11/100
+17998/17998 [==============================] - 24s 1ms/step - loss: 0.1978 - acc: 0.9180 - val_loss: 0.4592 - val_acc: 0.7990
+Epoch 12/100
+17998/17998 [==============================] - 25s 1ms/step - loss: 0.1784 - acc: 0.9298 - val_loss: 0.4027 - val_acc: 0.8250
+Epoch 13/100
+17998/17998 [==============================] - 25s 1ms/step - loss: 0.1673 - acc: 0.9336 - val_loss: 0.4599 - val_acc: 0.8120
+Epoch 14/100
+17998/17998 [==============================] - 25s 1ms/step - loss: 0.1535 - acc: 0.9389 - val_loss: 0.4283 - val_acc: 0.8225
+Epoch 15/100
+17998/17998 [==============================] - 25s 1ms/step - loss: 0.1407 - acc: 0.9434 - val_loss: 0.4468 - val_acc: 0.8290
+Epoch 16/100
+17998/17998 [==============================] - 25s 1ms/step - loss: 0.1283 - acc: 0.9507 - val_loss: 0.4137 - val_acc: 0.8425
+Epoch 17/100
+17998/17998 [==============================] - 25s 1ms/step - loss: 0.1211 - acc: 0.9528 - val_loss: 0.5283 - val_acc: 0.8025
+Epoch 18/100
+17998/17998 [==============================] - 25s 1ms/step - loss: 0.1084 - acc: 0.9599 - val_loss: 0.5065 - val_acc: 0.8160
+Epoch 19/100
+17998/17998 [==============================] - 25s 1ms/step - loss: 0.1037 - acc: 0.9607 - val_loss: 0.5266 - val_acc: 0.8085
+Epoch 20/100
+17998/17998 [==============================] - 25s 1ms/step - loss: 0.0937 - acc: 0.9647 - val_loss: 0.5343 - val_acc: 0.8120
