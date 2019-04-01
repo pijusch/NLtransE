@@ -14,7 +14,7 @@ from keras.optimizers import Adam, Adagrad
 from keras.utils import to_categorical, plot_model
 from keras.callbacks import ModelCheckpoint
 from keras.layers import GlobalAveragePooling1D
-import pandas pd
+import pandas as  pd
 import numpy as np
 import argparse
 import gensim
@@ -22,6 +22,7 @@ import json
 from keras.callbacks import Callback
 from sklearn.metrics import confusion_matrix, f1_score, precision_score, recall_score
 import pickle
+
 
 def customloss(y_pred,y_true):
  return y_pred-y_true
@@ -51,9 +52,9 @@ metrics = Metrics()
 
 
 
-#model = gensim.models.KeyedVectors.load_word2vec_format('~/GoogleNews-vectors-negative300.bin', binary=True)
+model = gensim.models.KeyedVectors.load_word2vec_format('~/GoogleNews-vectors-negative300.bin', binary=True)
 
-model = dict()
+#model = dict()
 
 with open('../../data/subjects_total', 'r') as f:
     subs = f.read()
@@ -64,7 +65,7 @@ with open('../../data/relations_total', 'r') as f:
 with open('../../data/objects_total', 'r') as f:
     obs = f.read()
 
-labels =list( pd.read_csv('../../data/labels',header=None))
+labels =np.array( pd.read_csv('../../data/labels',header=None))
 from string import punctuation
 
 
@@ -186,7 +187,7 @@ for i, row in enumerate(ob_ints):
     ob_features[i, -len(row):] = np.array(row)[:ob_seq_len]
 
 
-split_frac = .2
+split_frac = .9
 
 split_index = int(split_frac * len(sub_features))
 
@@ -219,8 +220,8 @@ for i in range(n_words - 1):
 #with open('dic.pkl','wb') as f:
 # pickle.dump(w2v_embed,f)
 
-with open('../dic.pkl','rb') as f:
- w2v_embed = pickle.load(f)
+#with open('../dic.pkl','rb') as f:
+# w2v_embed = pickle.load(f)
 
 import random
 
@@ -349,15 +350,15 @@ print(lstm1.summary())
 print(lstm2.summary())
 print(lstm3.summary())
 # checkpointer = ModelCheckpoint(filepath=data_path + '/model-{epoch:02d}.hdf5', verbose=1)
-num_epochs = 1
-lab = [1]*int(len(train_sub_e)/2)
-lab = lab+  [0]*int(len(train_sub_e)/2)
+num_epochs = 25
 plot_model(parallel_model, to_file='model.png')
-parallel_model.fit(x=[train_sub_e, train_rel_e,train_ob_e],y = lab, batch_size=64, epochs=num_epochs,validation_split=0.1)
+parallel_model.fit(x=[train_sub_e, train_rel_e,train_ob_e],y =train_lab, batch_size=64, epochs=num_epochs,validation_split=0.1)
 #               validation_data=([val_sub_e,val_rel_e,val_ob_e],[0]*len(val_sub_e)))
 
+parallel_model.save("final_model.hdf5")
+parallel_model.load_weights("final_model.hdf5")
 
 
-print(parallel_model.predict([val_sub_e, val_rel_e, val_ob_e]))
-#print(parallel_model.evaluate([val_sub_e,val_rel_e,val_ob_e],val_y))
+#print(parallel_model.predict([val_sub_e, val_rel_e, val_ob_e]))
+print(parallel_model.evaluate([val_sub_e,val_rel_e,val_ob_e],val_lab))
 #parallel_model.save("final_model.hdf5")
