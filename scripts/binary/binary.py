@@ -350,15 +350,17 @@ print(lstm1.summary())
 print(lstm2.summary())
 print(lstm3.summary())
 # checkpointer = ModelCheckpoint(filepath=data_path + '/model-{epoch:02d}.hdf5', verbose=1)
-num_epochs = 25
+num_epochs = 2
 plot_model(parallel_model, to_file='model.png')
 parallel_model.fit(x=[train_sub_e, train_rel_e,train_ob_e],y =train_lab, batch_size=64, epochs=num_epochs,validation_split=0.1)
 #               validation_data=([val_sub_e,val_rel_e,val_ob_e],[0]*len(val_sub_e)))
 
 parallel_model.save("final_model.hdf5")
-parallel_model.load_weights("final_model.hdf5")
+del parallel_model
+parallel_model = load_model("final_model.hdf5")
 
 
 #print(parallel_model.predict([val_sub_e, val_rel_e, val_ob_e]))
 print(parallel_model.evaluate([val_sub_e,val_rel_e,val_ob_e],val_lab))
+print(parallel_model.evaluate([train_sub_e,train_rel_e,train_ob_e],train_lab))
 #parallel_model.save("final_model.hdf5")
