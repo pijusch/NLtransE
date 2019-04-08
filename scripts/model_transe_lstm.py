@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import gensim
 import torch
 import pickle
 from torch import nn
@@ -8,6 +9,8 @@ from torch import optim
 from torch.utils.data import DataLoader, ConcatDataset, TensorDataset
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+w2v_model = gensim.models.KeyedVectors.load_word2vec_format('./GoogleNews-vectors-negative300.bin', binary=True)
 
 with open('../data/subjects_small', 'r') as f:
     subs = f.read()
@@ -142,8 +145,14 @@ sub_dim = sub_features.shape[1]
 rel_dim = rel_features.shape[1]
 obj_dim = ob_features.shape[1]
 
+print(train_sub.shape)
+print(train_rel.shape)
+print(train_ob.shape)
+
 spo_train = np.concatenate([train_sub, train_rel, train_ob], axis=-1)
 spo_valid = np.concatenate([val_sub, val_rel, val_ob], axis=-1)
+
+print(spo_train.shape)
 
 neg_sub1 = np.zeros(train_sub.shape)
 neg_rel1 = np.zeros(train_rel.shape)
@@ -166,7 +175,7 @@ spo_neg1 = np.concatenate([neg_sub1, neg_rel1, neg_ob1], axis=-1)
 
 class Model(nn.Module):
 
-    def __init__(self, vocab_size, embedding_dim, weight_matrix, hidden_dim, num_layers, p_dropout, batch_size):
+    def __init__(self, vocab_size, embedding_dim, weight_matrix, hidden_dim, num_layers, p_dropout, batch_size, sub_dim, rel_dim, obj_dim):
 
         super(Model, self).__init__()
 
@@ -205,49 +214,65 @@ class Model(nn.Module):
         lstm_rel, _ = self.lstm(rel, (h0_rel, c0_rel))
         lstm_obj, _ = self.lstm(obj, (h0_obj, c0_obj))
 
+
         lstm_sub = self.dropout(lstm_sub)
         lstm_rel = self.dropout(lstm_rel)
         lstm_obj = self.dropout(lstm_obj)
 
-        lstm_sub = lstm_sub.view(-1, lstm_sub.size(2))
-        lstm_rel = lstm_rel.view(-1, lstm_rel.size(2))
-        lstm_obj = lstm_obj.view(-1, lstm_obj.size(2))
+        lstm_sub = lstm_sub[:, sub_dim-1:, :]
+        lstm_rel = lstm_rel[:, rel_dim-1:, :]
+        lstm_obj = lstm_obj[:, obj_dim-1:, :]
 
-        sub_out = self.linear(lstm_sub)
-        rel_out = self.linear(lstm_rel)
-        obj_out = self.linear(lstm_obj)
-
-        score = torch.sum(sub_out + rel_out - obj_out, -1)
+        # print(lstm_sub.size())
+        # print(lstm_rel.size())
+        # print(lstm_obj.size())
+        #
+        # # lstm_sub = lstm_sub.view(-1, lstm_sub.size(2))
+        # # lstm_rel = lstm_rel.view(-1, lstm_rel.size(2))
+        # # lstm_obj = lstm_obj.view(-1, lstm_obj.size(2))
+        # #
+        # # sub_out = self.linear(lstm_sub)
+        # # rel_out = self.linear(lstm_rel)
+        # # obj_out = self.linear(lstm_obj)
+        #
+        #
+        # # print(sub_out.size())
+        # # print(rel_out.size())
+        # # print(obj_out.size())
+        score = torch.sum(lstm_sub + lstm_rel - lstm_obj, -1)
         return score.view(-1,1)
 
 batch_size = 1000
 
-spo_train = torch.LongTensor(train_sub).to(device)
+spo_train = torch.LongTensor(spo_train).to(device)
 spo_valid = torch.LongTensor(spo_valid).to(device)
 spo_neg1 = torch.LongTensor(spo_neg1).to(device)
 
+
+spo_train = torch.cat((spo_train, spo_neg1), dim=0)
+print(spo_train.size())
 train_dataset1 = TensorDataset(spo_train, torch.zeros(spo_train.size(0)))
 valid_dataset = DataLoader(TensorDataset(spo_valid, torch.zeros(spo_valid.size(0))), batch_size=batch_size, shuffle=True, drop_last=True)
-neg_dataset1 = TensorDataset(spo_neg1, torch.zeros(spo_neg1.size(0)))
+#neg_dataset1 = TensorDataset(spo_neg1, torch.zeros(spo_neg1.size(0)))
 
-train_dataset = DataLoader(ConcatDataset(train_dataset1, neg_dataset1), batch_size=batch_size, shuffle=True, drop_last=True)
+train_dataset = DataLoader(train_dataset1, batch_size=batch_size, shuffle=True, drop_last=True)
 
 p_dropout = 0.5
 n_words = len(vocab_to_int) + 1
 embed_size = 300
-weights_matrix = np.zeros(n_words,embed_size)
+weights_matrix = np.zeros((n_words,embed_size), dtype=np.float)
 hidden_size = 256
 num_layers = 1
 
 
 for i, word in enumerate(words):
     try:
-        weights_matrix[i] = w2v_embed[word]
+        weights_matrix[int(i)] = w2v_model[word]
     except KeyError:
-        weights_matrix[i] = np.random.normal(scale=0.6, size=(embed_size, ))
+        weights_matrix[int(i)] = np.random.normal(scale=0.6, size=(embed_size, ))
 
 weights_matrix = torch.from_numpy(weights_matrix).float()
-model = Model(n_words, embed_size, weights_matrix, hidden_size, num_layers, p_dropout, batch_size).to(device)
+model = Model(n_words, embed_size, weights_matrix, hidden_size, num_layers, p_dropout, batch_size, sub_dim, rel_dim, obj_dim).to(device)
 optimizer = optim.Adam(model.parameters(), lr=0.1)
 
 
@@ -255,10 +280,10 @@ def train(spo):
 
     zero = torch.FloatTensor([0.0])
     sub, pred, obj = torch.split(spo, [sub_dim, rel_dim, obj_dim], dim=1)
-    criterion = lambda score : torch.sum(torch.max(Variable(zero), score))
+    criterion = lambda score : torch.sum(torch.max(Variable(zero).to(device), score))
     optimizer.zero_grad()
 
-    total_score = model(Variable(sub), Variable(pred), Variable(obj))
+    total_score = model(Variable(sub).to(device), Variable(pred).to(device), Variable(obj).to(device))
 
     loss = criterion(total_score)
     loss.backward()
@@ -273,10 +298,10 @@ def run_transe_validation():
 
     for batch_id, (spo, _) in enumerate(valid_dataset):
 
-        zero = torch.FloatTensor([0.0])
+        zero = torch.FloatTensor([0.0]).to(device)
         sub, pred, obj = torch.split(spo, [sub_dim, rel_dim, obj_dim], dim=1)
-        criterion = lambda score : torch.sum(torch.max(Variable(zero), score))
-        total_score = model(Variable(sub), Variable(pred), Variable(obj))
+        criterion = lambda score : torch.sum(torch.max(Variable(zero).to(device), score))
+        total_score = model(Variable(sub).to(device), Variable(pred).to(device), Variable(obj).to(device))
         val_loss += criterion(total_score)
 
     return val_loss.item()
@@ -293,15 +318,15 @@ def run_transe(num_epochs):
             epoch_loss += train(spo)
 
         print ("Epoch %d Total loss: %f" % (i+1, epoch_loss/total_batches))
-        if (i+1) % 10 == 0:
-            val_loss = run_transe_validation()/val_batches
-            print("Validation Loss:", val_loss)
+       # if (i+1) % 10 == 0:
+        val_loss = run_transe_validation()/val_batches
+        print("Validation Loss:", val_loss)
 
 
 if __name__ == "__main__":
 
     run_transe(40)
-    torch.save(model,"./model/model_RNN_WordPhrase_rev_final.pt")
+    torch.save(model,"model_RNN_WordPhrase_rev_final.pt")
     final_loss = run_transe_validation()
     val_batches = len(valid_dataset)
     print("Final Validation Loss:", run_transe_validation()/val_batches)
