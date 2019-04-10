@@ -267,7 +267,7 @@ p_dropout = 0.5
 n_words = len(vocab_to_int) + 1
 embed_size = 300
 weights_matrix = np.zeros((n_words,embed_size), dtype=np.float)
-hidden_size = 256
+hidden_size = 512
 num_layers = 1
 
 
@@ -279,8 +279,8 @@ for i, word in enumerate(words):
 
 weights_matrix = torch.from_numpy(weights_matrix).float()
 model = Model(n_words, embed_size, weights_matrix, hidden_size, num_layers, p_dropout, batch_size, sub_dim, rel_dim, obj_dim).to(device)
-optimizer = optim.Adam(model.parameters(), lr=0.1)
-
+optimizer = optim.Adam(model.parameters(), lr=0.005)
+scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min',verbose=True,patience=5,factor=0.5)
 
 def train(spo, sno):
 
@@ -366,13 +366,14 @@ def run_transe(num_epochs):
             n,z_n = next(neg_iter)
             epoch_loss += train(p, n)
 
+        scheduler.step(epoch_loss/total_batches)
         print ("Epoch %d Total loss: %f" % (i+1, epoch_loss/total_batches))
-        if (i+1) % 10 == 0:
-            run_transe_validation()
+        # if (i+1) % 10 == 0:
+        #     run_transe_validation()
 
 
 if __name__ == "__main__":
 
-    run_transe(40)
-    torch.save(model,"model_RNN_WordPhrase_rev_final.pt")
-    run_transe_validation()
+    run_transe(200)
+    torch.save(model,"model_transE_lstm.pt")
+  #  run_transe_validation()
