@@ -248,6 +248,7 @@ spo_train = torch.LongTensor(spo_train).to(device)
 spo_valid = torch.LongTensor(spo_valid).to(device)
 spo_neg1 = torch.LongTensor(spo_neg1).to(device)
 
+entities = torch.LongTensor(np.arange(sub_dim[0])).to(device)
 
 # spo_train = torch.cat((spo_train, spo_neg1), dim=0)
 # print(spo_train.size())
@@ -295,6 +296,42 @@ def train(spo, sno):
 
 def run_transe_validation():
 
+    val_loss = torch.FloatTensor([0.0])
+
+    for batch_id, (spo, _) in enumerate(valid_dataset):
+
+        zero = torch.FloatTensor([0.0]).to(device)
+        sub, pred, obj = torch.split(spo, [sub_dim, rel_dim, obj_dim], dim=1)
+        criterion = lambda pos, neg : torch.sum(torch.max(Variable(zero).to(device), 1 - pos + neg))
+        total_score = model(Variable(sub).to(device), Variable(pred).to(device), Variable(obj).to(device))
+        val_loss += criterion(total_score)
+
+    return val_loss.item()
+
+
+def hitsatk_transe(spo, k):
+
+    total = 0.0
+
+    # for i in range(0, tmodel.batch_size, 1):
+
+    s, p, o = torch.split(spo, [sub_dim, rel_dim, obj_dim], dim=1)
+
+    s = s.repeat(1, sub_dim[0]).view(-1, 1)
+    p = p.repeat(1, rel_dim[0]).view(-1, 1)
+    e = entities.repeat(batch_size).view(-1,1)
+
+    output = model(Variable(s), Variable(p), Variable(e))
+
+    output = output.view(-1, entities.size(0))
+    hits = torch.nonzero((o == torch.topk(output, k, dim=-1)[1].data).view(-1))
+    if len(hits.size()) > 0:
+        total += float(hits.size(0)) / o.size(0)
+
+    return total
+
+def run_transe_validation():
+
     hits1 = []
     hits10 = []
     hits100 = []
@@ -310,28 +347,6 @@ def run_transe_validation():
     print( "Validation hits@1: %f" % (float(sum(hits1)) / len(hits1)))
     print( "Validation hits@10: %f" % (float(sum(hits10)) / len(hits10)))
     print( "Validation hits@100: %f" % (float(sum(hits100)) / len(hits100)))
-
-def hitsatk_transe(spo, k):
-
-    total = 0.0
-
-    # for i in range(0, tmodel.batch_size, 1):
-
-    s, p, o = torch.split(spo, [sub_dim, rel_dim, obj_dim], dim=1)
-    # s = s.repeat(1, sub).view(-1, 1)
-    # p = p.repeat(1, model.num_entities).view(-1, 1)
-    # e = entities.repeat(batch_size_valid).view(-1,1)
-
-    # print (s.size(), p.size(), entities.size())
-
-    output = model(Variable(s).to(device), Variable(p).to(device), Variable(o).to(device))
-
-    hits = torch.nonzero((o == torch.topk(output, k, dim=-1)[1].data).view(-1))
-    if len(hits.size()) > 0:
-        total += float(hits.size(0)) / o.size(0)
-
-    return total
-
 
 def run_transe(num_epochs):
 
@@ -349,9 +364,9 @@ def run_transe(num_epochs):
             epoch_loss += train(p, n)
 
         print ("Epoch %d Total loss: %f" % (i+1, epoch_loss/total_batches))
-       # if (i+1) % 10 == 0:
-        val_loss = run_transe_validation()/val_batches
-        print("Validation Loss:", val_loss)
+        if (i+1) % 10 == 0:
+            val_loss = run_transe_validation()/val_batches
+            print("Validation Loss:", val_loss)
 
 
 if __name__ == "__main__":
