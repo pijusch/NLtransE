@@ -6,10 +6,10 @@ os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
 os.environ["CUDA_VISIBLE_DEVICES"]="1" 
 import tensorflow as tf
 from keras import backend as K
-from keras.models import Sequential, load_model
+from keras.models import Sequential, load_model, Model
 from keras.utils import multi_gpu_model
 from keras.layers import Dense, Activation, Embedding, Dropout, TimeDistributed, Lambda
-from keras.layers import LSTM, Multiply, Merge, add, subtract, Add, Subtract, Concatenate
+from keras.layers import LSTM, Multiply, add, subtract, Add, Subtract, Concatenate, multiply
 from keras.optimizers import Adam, Adagrad
 from keras.utils import to_categorical, plot_model
 from keras.callbacks import ModelCheckpoint
@@ -29,7 +29,7 @@ def customloss(y_pred,y_true):
  #return K.l2_normalize(y_pred,axis=1)
  
 
-
+'''
 class Metrics(Callback):
  def on_train_begin(self, logs={}):
   self.val_f1s = []
@@ -49,12 +49,12 @@ class Metrics(Callback):
   return
  
 metrics = Metrics()
+'''
 
 
+#model = gensim.models.KeyedVectors.load_word2vec_format('~/GoogleNews-vectors-negative300.bin', binary=True)
 
-model = gensim.models.KeyedVectors.load_word2vec_format('~/GoogleNews-vectors-negative300.bin', binary=True)
-
-#model = dict()
+model = dict()
 
 with open('../../data/subjects_total', 'r') as f:
     subs = f.read()
@@ -326,12 +326,14 @@ if use_dropout:
 lstm3.add(Dense(lstm_out, activation='sigmoid', name='out3'))
 lstm3.add(Lambda(lambda x: x * -1))
 
-model = Sequential()
 #model = Add()([lstm1,lstm2])
 #model = Subtract()([model,lstm3])
-model.add(Merge([Merge([lstm1, lstm2], mode='sum'),lstm3], mode='sum'))
+mul1 = Multiply()([lstm1.output,lstm2.output])
+mul2 = Multiply()([lstm3.output,mul1])
+final = Dense(1, activation = 'sigmoid')(mul2)
+model = Model([lstm1.input,lstm2.input,lstm3.input],final)
+#model.add(Merge([Merge([lstm1, lstm2], mode='sum'),lstm3], mode='sum'))
 #model.add(Lambda(lambda x: K.sum(x,axis=1),output_shape =[1]))
-model.add(Dense(1, activation = 'sigmoid'))
 #model.add(Merge([lstm1, lstm2], mode='sum'))
 # model = Multiply()([model1.get_layer('out1').output,model2.get_layer('out2').output])
 
@@ -351,10 +353,9 @@ print(lstm2.summary())
 print(lstm3.summary())
 # checkpointer = ModelCheckpoint(filepath=data_path + '/model-{epoch:02d}.hdf5', verbose=1)
 num_epochs = 2
-plot_model(parallel_model, to_file='model.png')
+#plot_model(parallel_model, to_file='model.png')
 parallel_model.fit(x=[train_sub_e, train_rel_e,train_ob_e],y =train_lab, batch_size=64, epochs=num_epochs,validation_split=0.1)
 #               validation_data=([val_sub_e,val_rel_e,val_ob_e],[0]*len(val_sub_e)))
-
 parallel_model.save("final_model.hdf5")
 del parallel_model
 parallel_model = load_model("final_model.hdf5")
