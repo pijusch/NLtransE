@@ -249,13 +249,14 @@ spo_valid = torch.LongTensor(spo_valid).to(device)
 spo_neg1 = torch.LongTensor(spo_neg1).to(device)
 
 
-spo_train = torch.cat((spo_train, spo_neg1), dim=0)
-print(spo_train.size())
+# spo_train = torch.cat((spo_train, spo_neg1), dim=0)
+# print(spo_train.size())
 train_dataset1 = TensorDataset(spo_train, torch.zeros(spo_train.size(0)))
 valid_dataset = DataLoader(TensorDataset(spo_valid, torch.zeros(spo_valid.size(0))), batch_size=batch_size, shuffle=True, drop_last=True)
-#neg_dataset1 = TensorDataset(spo_neg1, torch.zeros(spo_neg1.size(0)))
+neg_dataset1 = TensorDataset(spo_neg1, torch.zeros(spo_neg1.size(0)))
 
 train_dataset = DataLoader(train_dataset1, batch_size=batch_size, shuffle=True, drop_last=True)
+neg_dataset = DataLoader(neg_dataset1, batch_size=batch_size, shuffle=True, drop_last=True)
 
 p_dropout = 0.5
 n_words = len(vocab_to_int) + 1
@@ -276,35 +277,60 @@ model = Model(n_words, embed_size, weights_matrix, hidden_size, num_layers, p_dr
 optimizer = optim.Adam(model.parameters(), lr=0.1)
 
 
-def train(spo):
+def train(spo, sno):
 
     zero = torch.FloatTensor([0.0])
     sub, pred, obj = torch.split(spo, [sub_dim, rel_dim, obj_dim], dim=1)
-    criterion = lambda score : torch.sum(torch.max(Variable(zero).to(device), score))
+    neg_sub, neg_pred, neg_obj = torch.split(sno, [sub_dim, rel_dim, obj_dim], dim=1)
+    criterion = lambda pos, neg : torch.sum(torch.max(Variable(zero).to(device), 1 - pos + neg))
     optimizer.zero_grad()
 
-    total_score = model(Variable(sub).to(device), Variable(pred).to(device), Variable(obj).to(device))
-
-    loss = criterion(total_score)
+    pos_score = model(Variable(sub).to(device), Variable(pred).to(device), Variable(obj).to(device))
+    neg_score = model(Variable(neg_sub).to(device), Variable(neg_pred).to(device), Variable(neg_obj).to(device))
+    loss = criterion(pos_score, neg_score)
     loss.backward()
     optimizer.step()
 
     return loss.item()
 
-
 def run_transe_validation():
 
-    val_loss = torch.FloatTensor([0.0])
+    hits1 = []
+    hits10 = []
+    hits100 = []
 
     for batch_id, (spo, _) in enumerate(valid_dataset):
 
-        zero = torch.FloatTensor([0.0]).to(device)
-        sub, pred, obj = torch.split(spo, [sub_dim, rel_dim, obj_dim], dim=1)
-        criterion = lambda score : torch.sum(torch.max(Variable(zero).to(device), score))
-        total_score = model(Variable(sub).to(device), Variable(pred).to(device), Variable(obj).to(device))
-        val_loss += criterion(total_score)
+        print ("Validation batch ", batch_id)
 
-    return val_loss.item()
+        hits1 += [hitsatk_transe(spo, 1)]
+        hits10 += [hitsatk_transe(spo, 10)]
+        hits100 += [hitsatk_transe(spo, 100)]
+
+    print( "Validation hits@1: %f" % (float(sum(hits1)) / len(hits1)))
+    print( "Validation hits@10: %f" % (float(sum(hits10)) / len(hits10)))
+    print( "Validation hits@100: %f" % (float(sum(hits100)) / len(hits100)))
+
+def hitsatk_transe(spo, k):
+
+    total = 0.0
+
+    # for i in range(0, tmodel.batch_size, 1):
+
+    s, p, o = torch.split(spo, [sub_dim, rel_dim, obj_dim], dim=1)
+    # s = s.repeat(1, sub).view(-1, 1)
+    # p = p.repeat(1, model.num_entities).view(-1, 1)
+    # e = entities.repeat(batch_size_valid).view(-1,1)
+
+    # print (s.size(), p.size(), entities.size())
+
+    output = model(Variable(s).to(device), Variable(p).to(device), Variable(o).to(device))
+
+    hits = torch.nonzero((o == torch.topk(output, k, dim=-1)[1].data).view(-1))
+    if len(hits.size()) > 0:
+        total += float(hits.size(0)) / o.size(0)
+
+    return total
 
 
 def run_transe(num_epochs):
@@ -314,8 +340,13 @@ def run_transe(num_epochs):
         total_batches = len(train_dataset)
         val_batches = len(valid_dataset)
         epoch_loss = 0.0
-        for batch_id, (spo, _) in enumerate(train_dataset):
-            epoch_loss += train(spo)
+        train_iter = iter(train_dataset)
+        neg_iter = iter(neg_dataset)
+
+        for i in range(len(train_dataset)):
+            p,z_p = next(train_iter)
+            n,z_n = next(neg_iter)
+            epoch_loss += train(p, n)
 
         print ("Epoch %d Total loss: %f" % (i+1, epoch_loss/total_batches))
        # if (i+1) % 10 == 0:
