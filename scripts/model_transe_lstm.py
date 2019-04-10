@@ -145,6 +145,10 @@ sub_dim = sub_features.shape[1]
 rel_dim = rel_features.shape[1]
 obj_dim = ob_features.shape[1]
 
+sub_len = sub_features.shape[0]
+rel_len = rel_features.shape[0]
+obj_len = ob_features.shape[0]
+
 print(train_sub.shape)
 print(train_rel.shape)
 print(train_ob.shape)
@@ -242,13 +246,13 @@ class Model(nn.Module):
         score = torch.sum(lstm_sub + lstm_rel - lstm_obj, -1)
         return score.view(-1,1)
 
-batch_size = 1000
+batch_size = 50
 
 spo_train = torch.LongTensor(spo_train).to(device)
 spo_valid = torch.LongTensor(spo_valid).to(device)
 spo_neg1 = torch.LongTensor(spo_neg1).to(device)
 
-entities = torch.LongTensor(np.arange(sub_dim[0])).to(device)
+entities = torch.LongTensor(np.arange(obj_dim)).to(device)
 
 # spo_train = torch.cat((spo_train, spo_neg1), dim=0)
 # print(spo_train.size())
@@ -317,9 +321,9 @@ def hitsatk_transe(spo, k):
 
     s, p, o = torch.split(spo, [sub_dim, rel_dim, obj_dim], dim=1)
 
-    s = s.repeat(1, sub_dim[0]).view(-1, 1)
-    p = p.repeat(1, rel_dim[0]).view(-1, 1)
-    e = entities.repeat(batch_size).view(-1,1)
+    s = s.repeat(1, sub_len)
+    p = p.repeat(1, rel_len)
+    e = entities.repeat(batch_size)
 
     output = model(Variable(s), Variable(p), Variable(e))
 
@@ -353,26 +357,22 @@ def run_transe(num_epochs):
     for i in range(num_epochs):
 
         total_batches = len(train_dataset)
-        val_batches = len(valid_dataset)
         epoch_loss = 0.0
         train_iter = iter(train_dataset)
         neg_iter = iter(neg_dataset)
 
-        for i in range(len(train_dataset)):
+        for j in range(len(train_dataset)):
             p,z_p = next(train_iter)
             n,z_n = next(neg_iter)
             epoch_loss += train(p, n)
 
         print ("Epoch %d Total loss: %f" % (i+1, epoch_loss/total_batches))
         if (i+1) % 10 == 0:
-            val_loss = run_transe_validation()/val_batches
-            print("Validation Loss:", val_loss)
+            run_transe_validation()
 
 
 if __name__ == "__main__":
 
     run_transe(40)
     torch.save(model,"model_RNN_WordPhrase_rev_final.pt")
-    final_loss = run_transe_validation()
-    val_batches = len(valid_dataset)
-    print("Final Validation Loss:", run_transe_validation()/val_batches)
+    run_transe_validation()
