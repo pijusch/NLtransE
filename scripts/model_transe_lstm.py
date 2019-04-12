@@ -3,8 +3,10 @@ import numpy as np
 import gensim
 import torch
 import pickle
+import random
 from torch import nn
 from torch.autograd import Variable
+import collections
 from torch import optim
 from torch.utils.data import DataLoader, ConcatDataset, TensorDataset
 
@@ -141,13 +143,13 @@ train_sub, val_sub = sub_features[:split_index], sub_features[split_index:]
 train_rel, val_rel = rel_features[:split_index], rel_features[split_index:]
 train_ob, val_ob = ob_features[:split_index], ob_features[split_index:]
 
-sub_dim = sub_features.shape[1]
-rel_dim = rel_features.shape[1]
-obj_dim = ob_features.shape[1]
+sub_dim = train_sub.shape[1]
+rel_dim = train_rel.shape[1]
+obj_dim = train_ob.shape[1]
 
-sub_len = sub_features.shape[0]
-rel_len = rel_features.shape[0]
-obj_len = ob_features.shape[0]
+sub_len = val_sub.shape[0]
+rel_len = val_rel.shape[0]
+obj_len = val_ob.shape[0]
 
 print(train_sub.shape)
 print(train_rel.shape)
@@ -252,8 +254,6 @@ spo_train = torch.LongTensor(spo_train).to(device)
 spo_valid = torch.LongTensor(spo_valid).to(device)
 spo_neg1 = torch.LongTensor(spo_neg1).to(device)
 
-entities = torch.LongTensor(np.arange(obj_dim)).to(device)
-
 # spo_train = torch.cat((spo_train, spo_neg1), dim=0)
 # print(spo_train.size())
 train_dataset1 = TensorDataset(spo_train, torch.zeros(spo_train.size(0)))
@@ -298,59 +298,67 @@ def train(spo, sno):
 
     return loss.item()
 
-def run_transe_validation():
-
-    val_loss = torch.FloatTensor([0.0])
-
-    for batch_id, (spo, _) in enumerate(valid_dataset):
-
-        zero = torch.FloatTensor([0.0]).to(device)
-        sub, pred, obj = torch.split(spo, [sub_dim, rel_dim, obj_dim], dim=1)
-        criterion = lambda pos, neg : torch.sum(torch.max(Variable(zero).to(device), 1 - pos + neg))
-        total_score = model(Variable(sub).to(device), Variable(pred).to(device), Variable(obj).to(device))
-        val_loss += criterion(total_score)
-
-    return val_loss.item()
+# def run_transe_validation():
+#
+#     val_loss = torch.FloatTensor([0.0])
+#
+#     for batch_id, (spo, _) in enumerate(valid_dataset):
+#
+#         zero = torch.FloatTensor([0.0]).to(device)
+#         sub, pred, obj = torch.split(spo, [sub_dim, rel_dim, obj_dim], dim=1)
+#         criterion = lambda pos, neg : torch.sum(torch.max(Variable(zero).to(device), 1 - pos + neg))
+#         total_score = model(Variable(sub).to(device), Variable(pred).to(device), Variable(obj).to(device))
+#         val_loss += criterion(total_score)
+#
+#     return val_loss.item()
 
 
 def hitsatk_transe(spo, k):
 
     total = 0.0
 
-    # for i in range(0, tmodel.batch_size, 1):
-
     s, p, o = torch.split(spo, [sub_dim, rel_dim, obj_dim], dim=1)
 
-    s = s.repeat(1, sub_len)
-    p = p.repeat(1, rel_len)
-    e = entities.repeat(batch_size)
+    #Looping through all the subjects
+    for i1 in range(len(s)):
 
-    output = model(Variable(s), Variable(p), Variable(e))
+        s1 = s[i1][:]
+        #Taking 1000 random samples including the actual object
+        o1 = random.sample(o, 999)
+        o1.append(o[i1][:])
 
-    output = output.view(-1, entities.size(0))
-    hits = torch.nonzero((o == torch.topk(output, k, dim=-1)[1].data).view(-1))
-    if len(hits.size()) > 0:
-        total += float(hits.size(0)) / o.size(0)
+        #Looping through all the predicates
+        for j in range(len(p)):
+            score = dict()
+            p1 = p[j][:]
 
-    return total
+            #Looping through the 1000 samples to get the score of each sample
+            for m in range(len(o1)):
+                output = model(Variable(s1), Variable(p1), Variable(o1[m][:]))
+                score[m] = output
+
+            #Sorting according to scores and getting the indexes of those scores
+            sorted_x = sorted(score.items(), key=lambda kv: kv[1])
+            sorted_dict = collections.OrderedDict(sorted_x)
+            sorted_key = list(sorted_dict.keys())
+
+            #Checking for hits in top k indexes
+            for a in range(k):
+                out = sorted_key[a]
+                if o1[out][:] == o[i1][:]:
+                    total += 1.0
+
+    return total/len(o)
 
 def run_transe_validation():
 
-    hits1 = []
-    hits10 = []
-    hits100 = []
+    hits1 = hitsatk_transe(spo_valid, 1)
+    hits10 = hitsatk_transe(spo_valid, 10)
+    hits100 = hitsatk_transe(spo_valid, 100)
 
-    for batch_id, (spo, _) in enumerate(valid_dataset):
-
-        print ("Validation batch ", batch_id)
-
-        hits1 += [hitsatk_transe(spo, 1)]
-        hits10 += [hitsatk_transe(spo, 10)]
-        hits100 += [hitsatk_transe(spo, 100)]
-
-    print( "Validation hits@1: %f" % (float(sum(hits1)) / len(hits1)))
-    print( "Validation hits@10: %f" % (float(sum(hits10)) / len(hits10)))
-    print( "Validation hits@100: %f" % (float(sum(hits100)) / len(hits100)))
+    print("Validation hits@1: %f", hits1)
+    print("Validation hits@10: %f", hits10)
+    print("Validation hits@100: %f", hits100)
 
 def run_transe(num_epochs):
 
@@ -374,6 +382,7 @@ def run_transe(num_epochs):
 
 if __name__ == "__main__":
 
-    run_transe(200)
-    torch.save(model,"model_transE_lstm.pt")
-  #  run_transe_validation()
+    # run_transe(200)
+    # torch.save(model,"model_transE_lstm.pt")
+    model = torch.load("model_transE_lstm.pt", map_location=lambda storage, loc: storage)
+    run_transe_validation()
