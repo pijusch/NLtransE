@@ -9,6 +9,8 @@ from torch.autograd import Variable
 import collections
 from torch import optim
 from torch.utils.data import DataLoader, ConcatDataset, TensorDataset
+import matplotlib
+import matplotlib.pyplot as plt
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -83,6 +85,26 @@ print("Maximum rel length: {}".format(max(rel_lens)))
 
 print("Zero-length obj: {}".format(ob_lens[0]))
 print("Maximum obj length: {}".format(max(ob_lens)))
+
+
+sub_lens1 = [len(x) for x in sub_ints]
+rel_lens1 = [len(x) for x in rel_ints]
+ob_lens1 = [len(x) for x in ob_ints]
+
+plt.plot(sub_lens1)
+plt.title('Subject Length')
+plt.show()
+plt.savefig('sub_len.png')
+
+plt.plot(rel_lens1)
+plt.title('Relation Length')
+plt.show()
+plt.savefig('rel_len.png')
+
+plt.plot(ob_lens1)
+plt.title('Object Length')
+plt.show()
+plt.savefig('obj_len.png')
 
 ts = []
 tr = []
@@ -201,16 +223,16 @@ class Model(nn.Module):
 
         self.embedding.weight = nn.Parameter(weight_matrix)
 
-    def forward(self, sub, rel, obj):
+    def forward(self, sub, rel, obj, batch_size):
 
-        h0_sub = torch.zeros(self.num_layers, self.batch_size, self.hidden_size).to(device)
-        c0_sub = torch.zeros(self.num_layers, self.batch_size, self.hidden_size).to(device)
+        h0_sub = torch.zeros(self.num_layers, batch_size, self.hidden_size).to(device)
+        c0_sub = torch.zeros(self.num_layers, batch_size, self.hidden_size).to(device)
 
-        h0_rel = torch.zeros(self.num_layers, self.batch_size, self.hidden_size).to(device)
-        c0_rel = torch.zeros(self.num_layers, self.batch_size, self.hidden_size).to(device)
+        h0_rel = torch.zeros(self.num_layers, batch_size, self.hidden_size).to(device)
+        c0_rel = torch.zeros(self.num_layers, batch_size, self.hidden_size).to(device)
 
-        h0_obj = torch.zeros(self.num_layers, self.batch_size, self.hidden_size).to(device)
-        c0_obj = torch.zeros(self.num_layers, self.batch_size, self.hidden_size).to(device)
+        h0_obj = torch.zeros(self.num_layers, batch_size, self.hidden_size).to(device)
+        c0_obj = torch.zeros(self.num_layers, batch_size, self.hidden_size).to(device)
 
         sub = self.embedding(sub)
         rel = self.embedding(rel)
@@ -290,27 +312,13 @@ def train(spo, sno):
     criterion = lambda pos, neg : torch.sum(torch.max(Variable(zero).to(device), 1 - pos + neg))
     optimizer.zero_grad()
 
-    pos_score = model(Variable(sub).to(device), Variable(pred).to(device), Variable(obj).to(device))
-    neg_score = model(Variable(neg_sub).to(device), Variable(neg_pred).to(device), Variable(neg_obj).to(device))
+    pos_score = model(Variable(sub).to(device), Variable(pred).to(device), Variable(obj).to(device), batch_size)
+    neg_score = model(Variable(neg_sub).to(device), Variable(neg_pred).to(device), Variable(neg_obj).to(device), batch_size)
     loss = criterion(pos_score, neg_score)
     loss.backward()
     optimizer.step()
 
     return loss.item()
-
-# def run_transe_validation():
-#
-#     val_loss = torch.FloatTensor([0.0])
-#
-#     for batch_id, (spo, _) in enumerate(valid_dataset):
-#
-#         zero = torch.FloatTensor([0.0]).to(device)
-#         sub, pred, obj = torch.split(spo, [sub_dim, rel_dim, obj_dim], dim=1)
-#         criterion = lambda pos, neg : torch.sum(torch.max(Variable(zero).to(device), 1 - pos + neg))
-#         total_score = model(Variable(sub).to(device), Variable(pred).to(device), Variable(obj).to(device))
-#         val_loss += criterion(total_score)
-#
-#     return val_loss.item()
 
 
 def hitsatk_transe(spo, k):
@@ -318,47 +326,58 @@ def hitsatk_transe(spo, k):
     total = 0.0
 
     s, p, o = torch.split(spo, [sub_dim, rel_dim, obj_dim], dim=1)
-
+    model.eval()
     #Looping through all the subjects
     for i1 in range(len(s)):
 
         s1 = s[i1][:]
-        #Taking 1000 random samples including the actual object
-        o1 = random.sample(o, 999)
-        o1.append(o[i1][:])
+        p1 = p[i1][:]
+        print(o.size())
+        arr = np.arange(0,o.size(0)).tolist()
 
-        #Looping through all the predicates
-        for j in range(len(p)):
-            score = dict()
-            p1 = p[j][:]
+        #Taking 100 random samples including the actual object
+        arr_list = random.sample(arr, 99)
+        o1 = torch.zeros((100, o.size(1)), dtype = torch.long)
+        for l in range(len(arr_list)):
+            o1[l][:] = o[arr_list[l]][:]
+        o1[99][:] = o[i1][:]
+        o1 = o1.to(device)
 
-            #Looping through the 1000 samples to get the score of each sample
-            for m in range(len(o1)):
-                output = model(Variable(s1), Variable(p1), Variable(o1[m][:]))
-                score[m] = output
+        print(o1.size())
+        score = dict()
+        #Looping through the 1000 samples to get the score of each sample
+        obj_val = o1.view(100,-1)
+        sub_val = s1.repeat(100).view(100,-1)
+        pred_val = p1.repeat(100).view(100,-1)
+        output = model(Variable(sub_val), Variable(pred_val), Variable(obj_val), 100)
+
+        for m in range(len(output)):
+            score[m] = output[m]
 
             #Sorting according to scores and getting the indexes of those scores
-            sorted_x = sorted(score.items(), key=lambda kv: kv[1])
-            sorted_dict = collections.OrderedDict(sorted_x)
-            sorted_key = list(sorted_dict.keys())
+        sorted_x = sorted(score.items(), key=lambda kv: kv[1])
+        sorted_dict = collections.OrderedDict(sorted_x)
+        sorted_key = list(sorted_dict.keys())
 
             #Checking for hits in top k indexes
-            for a in range(k):
-                out = sorted_key[a]
-                if o1[out][:] == o[i1][:]:
-                    total += 1.0
-
+        for a in range(k):
+            out = sorted_key[a]
+            val1 = o1[out][:].cpu().numpy()
+            val2 = o[i1][:].cpu().numpy()
+            if (val1 == val2).all():
+                total += 1.0
+        print("Total ", i1, " : ",total)
     return total/len(o)
 
 def run_transe_validation():
 
     hits1 = hitsatk_transe(spo_valid, 1)
     hits10 = hitsatk_transe(spo_valid, 10)
-    hits100 = hitsatk_transe(spo_valid, 100)
+  #  hits100 = hitsatk_transe(spo_valid, 100)
 
     print("Validation hits@1: %f", hits1)
     print("Validation hits@10: %f", hits10)
-    print("Validation hits@100: %f", hits100)
+  #  print("Validation hits@100: %f", hits100)
 
 def run_transe(num_epochs):
 
@@ -382,7 +401,7 @@ def run_transe(num_epochs):
 
 if __name__ == "__main__":
 
-    # run_transe(200)
-    # torch.save(model,"model_transE_lstm.pt")
+    run_transe(200)
+    torch.save(model,"model_transE_lstm1.pt")
     model = torch.load("model_transE_lstm.pt", map_location=lambda storage, loc: storage)
     run_transe_validation()
