@@ -58,16 +58,16 @@ metrics = Metrics()
 
 model = dict()
 
-with open('../data/full/subjects', 'r') as f:
+with open('../data/total/subjects', 'r') as f:
     subs = f.read()
 
-with open('../data/full/relations', 'r') as f:
+with open('../data/total/relations', 'r') as f:
     rels = f.read()
 
-with open('../data/full/objects', 'r') as f:
+with open('../data/total/objects', 'r') as f:
     obs = f.read()
 
-labels =np.array( pd.read_csv('../data/full/labels',header=None))
+labels =np.array( pd.read_csv('../data/total/labels',header=None))
 from string import punctuation
 
 
@@ -189,7 +189,14 @@ for i, row in enumerate(ob_ints):
     ob_features[i, -len(row):] = np.array(row)[:ob_seq_len]
 
 
-split_frac = .9
+split_frac = .1
+
+split_index = int(split_frac * len(sub_features))
+
+sub_features = sub_features[:split_index]
+rel_features = rel_features[:split_index]
+ob_features = ob_features[:split_index]
+labels = labels[:split_index]
 
 split_index = int(split_frac * len(sub_features))
 
@@ -351,9 +358,9 @@ print(lstm1.summary())
 print(lstm2.summary())
 print(lstm3.summary())
 # checkpointer = ModelCheckpoint(filepath=data_path + '/model-{epoch:02d}.hdf5', verbose=1)
-num_epochs = 2
+num_epochs = 10
 #plot_model(parallel_model, to_file='model.png')
-parallel_model.fit(x=[train_sub_e, train_rel_e,train_ob_e],y =train_lab, batch_size=10, epochs=num_epochs,validation_split=0.1)
+parallel_model.fit(x=[train_sub_e, train_rel_e,train_ob_e],y =train_lab, batch_size=32, epochs=num_epochs,validation_split=0.1)
 #               validation_data=([val_sub_e,val_rel_e,val_ob_e],[0]*len(val_sub_e)))
 parallel_model.save("final_model.hdf5")
 del parallel_model
