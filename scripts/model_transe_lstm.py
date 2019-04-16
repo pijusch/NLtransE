@@ -318,19 +318,19 @@ def hitsatk_transe(spo, k):
         arr = np.arange(0,o2.size(0)).tolist()
 
         #Taking 100 random samples including the actual object
-        arr_list = random.sample(arr, 999)
-        o1 = torch.zeros((1000, o2.size(1)), dtype = torch.long)
+        arr_list = random.sample(arr, 99)
+        o1 = torch.zeros((100, o2.size(1)), dtype = torch.long)
         for l in range(len(arr_list)):
             o1[l][:] = o2[arr_list[l]][:]
-        o1[999][:] = o[i1][:]
+        o1[99][:] = o[i1][:]
         o1 = o1.to(device)
 
         score = dict()
         #Looping through the 100 samples to get the score of each sample
-        obj_val = o1.view(1000,-1)
-        sub_val = s1.repeat(1000).view(1000,-1)
-        pred_val = p1.repeat(1000).view(1000,-1)
-        output = model(Variable(sub_val), Variable(pred_val), Variable(obj_val), 1000)
+        obj_val = o1.view(100,-1)
+        sub_val = s1.repeat(100).view(100,-1)
+        pred_val = p1.repeat(100).view(100,-1)
+        output = model(Variable(sub_val), Variable(pred_val), Variable(obj_val), 100)
 
         for m in range(len(output)):
             score[m] = output[m]
