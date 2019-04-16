@@ -1,0 +1,1662 @@
+Zero-length sub 1
+Maximum sub length: 17
+Zero-length rel: 1
+Maximum rel length: 5
+Zero-length obj: 1
+Maximum obj length: 17
+Zero-length subs: 0
+Maximum sub length: 17
+Zero-length rels: 0
+Maximum rel length: 5
+Zero-length obs: 0
+Maximum ob length: 17
+
+
+Model(
+  (embedding_s): Embedding(8172, 300)
+  (embedding_p): Embedding(8172, 300)
+  (embedding_o): Embedding(8172, 300)
+  (lstm_s): LSTM(300, 300, batch_first=True)
+  (lstm_p): LSTM(300, 300, batch_first=True)
+  (lstm_o): LSTM(300, 300, batch_first=True)
+  (linear): Linear(in_features=300, out_features=8172, bias=True)
+  (dropout): Dropout(p=0.5)
+)
+
+Epoch 1 Total loss: 257.443478
+Epoch 2 Total loss: 195.816085
+Epoch 3 Total loss: 183.168234
+Epoch 4 Total loss: 181.868605
+Epoch 5 Total loss: 177.846084
+Epoch 6 Total loss: 174.088614
+Epoch 7 Total loss: 167.359984
+Epoch 8 Total loss: 166.587380
+Epoch 9 Total loss: 162.029343
+Epoch 10 Total loss: 161.105285
+
+Hits@1:
+Total  0  :  0.0
+Total  100  :  9.0
+Total  200  :  25.0
+Total  300  :  37.0
+Total  400  :  50.0
+Total  500  :  60.0
+Total  600  :  80.0
+Total  700  :  88.0
+Total  800  :  104.0
+Total  900  :  116.0
+Total  1000  :  121.0
+Total  1100  :  136.0
+Total  1200  :  148.0
+Total  1300  :  161.0
+Total  1400  :  170.0
+Total  1500  :  181.0
+Total  1600  :  191.0
+Total  1700  :  200.0
+Total  1800  :  220.0
+Total  1900  :  233.0
+Total  2000  :  247.0
+Total  2100  :  254.0
+Total  2200  :  269.0
+Total  2300  :  284.0
+Total  2400  :  298.0
+Total  2500  :  312.0
+Total  2600  :  326.0
+Total  2700  :  336.0
+Total  2800  :  350.0
+Total  2900  :  360.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  54.0
+Total  200  :  106.0
+Total  300  :  154.0
+Total  400  :  209.0
+Total  500  :  257.0
+Total  600  :  307.0
+Total  700  :  357.0
+Total  800  :  412.0
+Total  900  :  465.0
+Total  1000  :  497.0
+Total  1100  :  547.0
+Total  1200  :  598.0
+Total  1300  :  635.0
+Total  1400  :  682.0
+Total  1500  :  731.0
+Total  1600  :  787.0
+Total  1700  :  832.0
+Total  1800  :  890.0
+Total  1900  :  941.0
+Total  2000  :  1005.0
+Total  2100  :  1053.0
+Total  2200  :  1104.0
+Total  2300  :  1155.0
+Total  2400  :  1206.0
+Total  2500  :  1258.0
+Total  2600  :  1308.0
+Total  2700  :  1352.0
+Total  2800  :  1405.0
+Total  2900  :  1447.0
+
+Validation hits@1:  0.12466666666666666
+Validation hits@10: 0.49933333333333335
+
+Epoch 11 Total loss: 154.028132
+Epoch 12 Total loss: 152.976266
+Epoch 13 Total loss: 153.999239
+Epoch 14 Total loss: 148.280794
+Epoch 15 Total loss: 147.682423
+Epoch 16 Total loss: 143.390658
+Epoch 17 Total loss: 138.622940
+Epoch 18 Total loss: 141.381621
+Epoch 19 Total loss: 138.245178
+Epoch 20 Total loss: 133.853692
+
+Hits@1:
+Total  0  :  0.0
+Total  100  :  18.0
+Total  200  :  32.0
+Total  300  :  45.0
+Total  400  :  67.0
+Total  500  :  79.0
+Total  600  :  98.0
+Total  700  :  114.0
+Total  800  :  136.0
+Total  900  :  155.0
+Total  1000  :  160.0
+Total  1100  :  175.0
+Total  1200  :  191.0
+Total  1300  :  203.0
+Total  1400  :  222.0
+Total  1500  :  232.0
+Total  1600  :  246.0
+Total  1700  :  256.0
+Total  1800  :  268.0
+Total  1900  :  284.0
+Total  2000  :  301.0
+Total  2100  :  314.0
+Total  2200  :  326.0
+Total  2300  :  341.0
+Total  2400  :  356.0
+Total  2500  :  371.0
+Total  2600  :  391.0
+Total  2700  :  399.0
+Total  2800  :  416.0
+Total  2900  :  429.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  55.0
+Total  200  :  116.0
+Total  300  :  169.0
+Total  400  :  234.0
+Total  500  :  290.0
+Total  600  :  354.0
+Total  700  :  404.0
+Total  800  :  460.0
+Total  900  :  526.0
+Total  1000  :  567.0
+Total  1100  :  615.0
+Total  1200  :  669.0
+Total  1300  :  721.0
+Total  1400  :  781.0
+Total  1500  :  835.0
+Total  1600  :  891.0
+Total  1700  :  942.0
+Total  1800  :  996.0
+Total  1900  :  1043.0
+Total  2000  :  1103.0
+Total  2100  :  1162.0
+Total  2200  :  1213.0
+Total  2300  :  1270.0
+Total  2400  :  1328.0
+Total  2500  :  1379.0
+Total  2600  :  1437.0
+Total  2700  :  1482.0
+Total  2800  :  1532.0
+Total  2900  :  1573.0
+
+
+Validation hits@1: 0.14833333333333334
+Validation hits@10: 0.5446666666666666
+
+Epoch 21 Total loss: 132.792170
+Epoch 22 Total loss: 135.898339
+Epoch 23 Total loss: 131.178472
+Epoch 24 Total loss: 127.721218
+Epoch 25 Total loss: 127.797482
+Epoch 26 Total loss: 127.395276
+Epoch 27 Total loss: 124.654376
+Epoch 28 Total loss: 122.850404
+Epoch 29 Total loss: 118.545597
+Epoch 30 Total loss: 115.517731
+
+Hits@1:
+Total  0  :  0.0
+Total  100  :  18.0
+Total  200  :  35.0
+Total  300  :  51.0
+Total  400  :  76.0
+Total  500  :  90.0
+Total  600  :  117.0
+Total  700  :  126.0
+Total  800  :  143.0
+Total  900  :  164.0
+Total  1000  :  181.0
+Total  1100  :  198.0
+Total  1200  :  219.0
+Total  1300  :  235.0
+Total  1400  :  250.0
+Total  1500  :  266.0
+Total  1600  :  285.0
+Total  1700  :  302.0
+Total  1800  :  319.0
+Total  1900  :  341.0
+Total  2000  :  369.0
+Total  2100  :  390.0
+Total  2200  :  410.0
+Total  2300  :  427.0
+Total  2400  :  440.0
+Total  2500  :  460.0
+Total  2600  :  477.0
+Total  2700  :  491.0
+Total  2800  :  505.0
+Total  2900  :  518.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  56.0
+Total  200  :  115.0
+Total  300  :  175.0
+Total  400  :  238.0
+Total  500  :  297.0
+Total  600  :  357.0
+Total  700  :  405.0
+Total  800  :  467.0
+Total  900  :  527.0
+Total  1000  :  566.0
+Total  1100  :  609.0
+Total  1200  :  670.0
+Total  1300  :  720.0
+Total  1400  :  777.0
+Total  1500  :  836.0
+Total  1600  :  894.0
+Total  1700  :  947.0
+Total  1800  :  1001.0
+Total  1900  :  1046.0
+Total  2000  :  1111.0
+Total  2100  :  1171.0
+Total  2200  :  1216.0
+Total  2300  :  1276.0
+Total  2400  :  1334.0
+Total  2500  :  1395.0
+Total  2600  :  1456.0
+Total  2700  :  1511.0
+Total  2800  :  1563.0
+Total  2900  :  1610.0
+
+
+Validation hits@1: 0.17933333333333334
+Validation hits@10: 0.556
+
+Epoch 31 Total loss: 121.923590
+Epoch 32 Total loss: 117.967447
+Epoch 33 Total loss: 114.142827
+Epoch 34 Total loss: 118.882096
+Epoch 35 Total loss: 121.594353
+Epoch 36 Total loss: 113.146588
+Epoch 37 Total loss: 112.486935
+Epoch 38 Total loss: 109.415313
+Epoch 39 Total loss: 107.375936
+Epoch 40 Total loss: 111.352217
+
+Hits@1:
+Total  0  :  0.0
+Total  100  :  19.0
+Total  200  :  41.0
+Total  300  :  58.0
+Total  400  :  88.0
+Total  500  :  99.0
+Total  600  :  115.0
+Total  700  :  135.0
+Total  800  :  149.0
+Total  900  :  165.0
+Total  1000  :  175.0
+Total  1100  :  190.0
+Total  1200  :  203.0
+Total  1300  :  216.0
+Total  1400  :  233.0
+Total  1500  :  246.0
+Total  1600  :  261.0
+Total  1700  :  275.0
+Total  1800  :  295.0
+Total  1900  :  314.0
+Total  2000  :  336.0
+Total  2100  :  358.0
+Total  2200  :  375.0
+Total  2300  :  397.0
+Total  2400  :  411.0
+Total  2500  :  433.0
+Total  2600  :  451.0
+Total  2700  :  464.0
+Total  2800  :  476.0
+Total  2900  :  493.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  55.0
+Total  200  :  117.0
+Total  300  :  175.0
+Total  400  :  243.0
+Total  500  :  298.0
+Total  600  :  366.0
+Total  700  :  422.0
+Total  800  :  489.0
+Total  900  :  547.0
+Total  1000  :  589.0
+Total  1100  :  642.0
+Total  1200  :  692.0
+Total  1300  :  740.0
+Total  1400  :  795.0
+Total  1500  :  845.0
+Total  1600  :  903.0
+Total  1700  :  954.0
+Total  1800  :  1008.0
+Total  1900  :  1056.0
+Total  2000  :  1119.0
+Total  2100  :  1182.0
+Total  2200  :  1234.0
+Total  2300  :  1291.0
+Total  2400  :  1352.0
+Total  2500  :  1410.0
+Total  2600  :  1473.0
+Total  2700  :  1527.0
+Total  2800  :  1576.0
+Total  2900  :  1630.0
+
+Validation hits@1: 0.17066666666666666
+Validation hits@10: 0.561
+
+Epoch 41 Total loss: 106.830579
+Epoch 42 Total loss: 103.881424
+Epoch 43 Total loss: 107.340917
+Epoch 44 Total loss: 105.352585
+Epoch 45 Total loss: 105.510462
+Epoch 46 Total loss: 106.522276
+Epoch 47 Total loss: 103.286830
+Epoch 48 Total loss: 106.295767
+Epoch 49 Total loss: 101.564943
+Epoch 50 Total loss: 101.440422
+
+Hits@1:
+Total  0  :  0.0
+Total  100  :  17.0
+Total  200  :  28.0
+Total  300  :  37.0
+Total  400  :  61.0
+Total  500  :  77.0
+Total  600  :  96.0
+Total  700  :  106.0
+Total  800  :  124.0
+Total  900  :  146.0
+Total  1000  :  156.0
+Total  1100  :  172.0
+Total  1200  :  188.0
+Total  1300  :  210.0
+Total  1400  :  233.0
+Total  1500  :  250.0
+Total  1600  :  269.0
+Total  1700  :  284.0
+Total  1800  :  299.0
+Total  1900  :  316.0
+Total  2000  :  338.0
+Total  2100  :  359.0
+Total  2200  :  377.0
+Total  2300  :  400.0
+Total  2400  :  415.0
+Total  2500  :  433.0
+Total  2600  :  451.0
+Total  2700  :  466.0
+Total  2800  :  477.0
+Total  2900  :  494.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  56.0
+Total  200  :  112.0
+Total  300  :  163.0
+Total  400  :  226.0
+Total  500  :  278.0
+Total  600  :  337.0
+Total  700  :  389.0
+Total  800  :  447.0
+Total  900  :  511.0
+Total  1000  :  551.0
+Total  1100  :  602.0
+Total  1200  :  663.0
+Total  1300  :  711.0
+Total  1400  :  767.0
+Total  1500  :  826.0
+Total  1600  :  887.0
+Total  1700  :  936.0
+Total  1800  :  990.0
+Total  1900  :  1044.0
+Total  2000  :  1109.0
+Total  2100  :  1171.0
+Total  2200  :  1220.0
+Total  2300  :  1277.0
+Total  2400  :  1332.0
+Total  2500  :  1400.0
+Total  2600  :  1460.0
+Total  2700  :  1516.0
+Total  2800  :  1562.0
+Total  2900  :  1608.0
+
+Validation hits@1: 0.17033333333333334
+Validation hits@10: 0.5566666666666666
+
+Epoch 51 Total loss: 101.001133
+Epoch 52 Total loss: 105.784727
+Epoch 53 Total loss: 105.967639
+Epoch 54 Total loss: 98.787846
+Epoch 55 Total loss: 100.751481
+Epoch 56 Total loss: 99.419667
+Epoch 57 Total loss: 98.692414
+Epoch 58 Total loss: 94.631500
+Epoch 59 Total loss: 98.537838
+Epoch 60 Total loss: 98.664501
+
+Hits@1:
+Total  0  :  0.0
+Total  100  :  16.0
+Total  200  :  30.0
+Total  300  :  44.0
+Total  400  :  77.0
+Total  500  :  88.0
+Total  600  :  107.0
+Total  700  :  115.0
+Total  800  :  137.0
+Total  900  :  157.0
+Total  1000  :  169.0
+Total  1100  :  187.0
+Total  1200  :  207.0
+Total  1300  :  229.0
+Total  1400  :  246.0
+Total  1500  :  262.0
+Total  1600  :  282.0
+Total  1700  :  300.0
+Total  1800  :  321.0
+Total  1900  :  339.0
+Total  2000  :  363.0
+Total  2100  :  378.0
+Total  2200  :  400.0
+Total  2300  :  417.0
+Total  2400  :  432.0
+Total  2500  :  449.0
+Total  2600  :  471.0
+Total  2700  :  486.0
+Total  2800  :  501.0
+Total  2900  :  518.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  62.0
+Total  200  :  128.0
+Total  300  :  192.0
+Total  400  :  262.0
+Total  500  :  319.0
+Total  600  :  380.0
+Total  700  :  441.0
+Total  800  :  504.0
+Total  900  :  568.0
+Total  1000  :  608.0
+Total  1100  :  657.0
+Total  1200  :  708.0
+Total  1300  :  760.0
+Total  1400  :  818.0
+Total  1500  :  883.0
+Total  1600  :  941.0
+Total  1700  :  989.0
+Total  1800  :  1052.0
+Total  1900  :  1104.0
+Total  2000  :  1166.0
+Total  2100  :  1228.0
+Total  2200  :  1281.0
+Total  2300  :  1337.0
+Total  2400  :  1396.0
+Total  2500  :  1461.0
+Total  2600  :  1522.0
+Total  2700  :  1581.0
+Total  2800  :  1640.0
+Total  2900  :  1692.0
+
+Validation hits@1: 0.178
+Validation hits@10: 0.583
+
+Epoch 61 Total loss: 100.330754
+Epoch 62 Total loss: 97.123817
+Epoch 63 Total loss: 94.362655
+Epoch 64 Total loss: 94.893296
+Epoch 65 Total loss: 91.502887
+Epoch 66 Total loss: 93.918038
+Epoch 67 Total loss: 94.678611
+Epoch 68 Total loss: 87.104232
+Epoch 69 Total loss: 86.539504
+Epoch 70 Total loss: 87.770263
+
+Hits@1:
+Total  0  :  0.0
+Total  100  :  21.0
+Total  200  :  39.0
+Total  300  :  55.0
+Total  400  :  82.0
+Total  500  :  96.0
+Total  600  :  121.0
+Total  700  :  134.0
+Total  800  :  154.0
+Total  900  :  175.0
+Total  1000  :  183.0
+Total  1100  :  196.0
+Total  1200  :  213.0
+Total  1300  :  230.0
+Total  1400  :  249.0
+Total  1500  :  269.0
+Total  1600  :  288.0
+Total  1700  :  302.0
+Total  1800  :  320.0
+Total  1900  :  341.0
+Total  2000  :  362.0
+Total  2100  :  380.0
+Total  2200  :  398.0
+Total  2300  :  415.0
+Total  2400  :  431.0
+Total  2500  :  449.0
+Total  2600  :  464.0
+Total  2700  :  482.0
+Total  2800  :  493.0
+Total  2900  :  507.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  61.0
+Total  200  :  119.0
+Total  300  :  177.0
+Total  400  :  251.0
+Total  500  :  316.0
+Total  600  :  381.0
+Total  700  :  436.0
+Total  800  :  497.0
+Total  900  :  565.0
+Total  1000  :  602.0
+Total  1100  :  648.0
+Total  1200  :  699.0
+Total  1300  :  746.0
+Total  1400  :  805.0
+Total  1500  :  864.0
+Total  1600  :  931.0
+Total  1700  :  982.0
+Total  1800  :  1043.0
+Total  1900  :  1089.0
+Total  2000  :  1155.0
+Total  2100  :  1215.0
+Total  2200  :  1267.0
+Total  2300  :  1326.0
+Total  2400  :  1378.0
+Total  2500  :  1444.0
+Total  2600  :  1498.0
+Total  2700  :  1549.0
+Total  2800  :  1600.0
+Total  2900  :  1654.0
+
+Validation hits@1: 0.176
+Validation hits@10: 0.5713333333333334
+
+Epoch 71 Total loss: 89.195234
+Epoch 72 Total loss: 91.922184
+Epoch 73 Total loss: 92.577843
+Epoch 74 Total loss: 86.423095
+Epoch 75 Total loss: 88.177096
+Epoch 76 Total loss: 90.211913
+Epoch 77 Total loss: 91.713810
+Epoch 78 Total loss: 88.116713
+Epoch 79 Total loss: 90.745542
+Epoch    79: reducing learning rate of group 0 to 1.0000e-03.
+Epoch 80 Total loss: 86.476525
+
+Hits@1:
+Total  0  :  0.0
+Total  100  :  23.0
+Total  200  :  39.0
+Total  300  :  57.0
+Total  400  :  83.0
+Total  500  :  95.0
+Total  600  :  124.0
+Total  700  :  140.0
+Total  800  :  155.0
+Total  900  :  173.0
+Total  1000  :  182.0
+Total  1100  :  200.0
+Total  1200  :  216.0
+Total  1300  :  236.0
+Total  1400  :  257.0
+Total  1500  :  281.0
+Total  1600  :  302.0
+Total  1700  :  319.0
+Total  1800  :  332.0
+Total  1900  :  351.0
+Total  2000  :  369.0
+Total  2100  :  385.0
+Total  2200  :  407.0
+Total  2300  :  428.0
+Total  2400  :  442.0
+Total  2500  :  455.0
+Total  2600  :  474.0
+Total  2700  :  488.0
+Total  2800  :  504.0
+Total  2900  :  518.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  62.0
+Total  200  :  128.0
+Total  300  :  181.0
+Total  400  :  249.0
+Total  500  :  306.0
+Total  600  :  380.0
+Total  700  :  440.0
+Total  800  :  504.0
+Total  900  :  563.0
+Total  1000  :  607.0
+Total  1100  :  664.0
+Total  1200  :  718.0
+Total  1300  :  763.0
+Total  1400  :  820.0
+Total  1500  :  881.0
+Total  1600  :  940.0
+Total  1700  :  994.0
+Total  1800  :  1055.0
+Total  1900  :  1106.0
+Total  2000  :  1171.0
+Total  2100  :  1238.0
+Total  2200  :  1292.0
+Total  2300  :  1350.0
+Total  2400  :  1408.0
+Total  2500  :  1465.0
+Total  2600  :  1526.0
+Total  2700  :  1577.0
+Total  2800  :  1637.0
+Total  2900  :  1684.0
+
+Validation hits@1: 0.17866666666666667
+Validation hits@10: 0.5813333333333334
+
+Epoch 81 Total loss: 74.486376
+Epoch 82 Total loss: 68.239931
+Epoch 83 Total loss: 66.478776
+Epoch 84 Total loss: 64.103187
+Epoch 85 Total loss: 59.659505
+Epoch 86 Total loss: 57.757529
+Epoch 87 Total loss: 59.916723
+Epoch 88 Total loss: 58.186641
+Epoch 89 Total loss: 57.297444
+Epoch 90 Total loss: 54.169870
+
+Hits@1:
+Total  0  :  0.0
+Total  100  :  23.0
+Total  200  :  45.0
+Total  300  :  61.0
+Total  400  :  87.0
+Total  500  :  104.0
+Total  600  :  129.0
+Total  700  :  142.0
+Total  800  :  161.0
+Total  900  :  185.0
+Total  1000  :  198.0
+Total  1100  :  217.0
+Total  1200  :  236.0
+Total  1300  :  259.0
+Total  1400  :  279.0
+Total  1500  :  299.0
+Total  1600  :  318.0
+Total  1700  :  339.0
+Total  1800  :  355.0
+Total  1900  :  377.0
+Total  2000  :  399.0
+Total  2100  :  419.0
+Total  2200  :  441.0
+Total  2300  :  464.0
+Total  2400  :  482.0
+Total  2500  :  497.0
+Total  2600  :  519.0
+Total  2700  :  535.0
+Total  2800  :  555.0
+Total  2900  :  574.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  62.0
+Total  200  :  129.0
+Total  300  :  188.0
+Total  400  :  252.0
+Total  500  :  312.0
+Total  600  :  379.0
+Total  700  :  438.0
+Total  800  :  505.0
+Total  900  :  567.0
+Total  1000  :  611.0
+Total  1100  :  666.0
+Total  1200  :  724.0
+Total  1300  :  775.0
+Total  1400  :  841.0
+Total  1500  :  896.0
+Total  1600  :  957.0
+Total  1700  :  1013.0
+Total  1800  :  1071.0
+Total  1900  :  1120.0
+Total  2000  :  1191.0
+Total  2100  :  1259.0
+Total  2200  :  1314.0
+Total  2300  :  1376.0
+Total  2400  :  1435.0
+Total  2500  :  1494.0
+Total  2600  :  1558.0
+Total  2700  :  1613.0
+Total  2800  :  1675.0
+Total  2900  :  1726.0
+
+
+Validation hits@1: 0.19833333333333333
+Validation hits@10: 0.5956666666666667
+
+Epoch 91 Total loss: 55.351704
+Epoch 92 Total loss: 54.806329
+Epoch 93 Total loss: 51.554397
+Epoch 94 Total loss: 53.024855
+Epoch 95 Total loss: 51.212314
+Epoch 96 Total loss: 49.429880
+Epoch 97 Total loss: 48.256368
+Epoch 98 Total loss: 50.689322
+Epoch 99 Total loss: 50.821656
+Epoch 100 Total loss: 47.841978
+
+Hits@1:
+Total  0  :  0.0
+Total  100  :  27.0
+Total  200  :  46.0
+Total  300  :  65.0
+Total  400  :  94.0
+Total  500  :  107.0
+Total  600  :  132.0
+Total  700  :  154.0
+Total  800  :  176.0
+Total  900  :  193.0
+Total  1000  :  207.0
+Total  1100  :  228.0
+Total  1200  :  248.0
+Total  1300  :  271.0
+Total  1400  :  290.0
+Total  1500  :  308.0
+Total  1600  :  326.0
+Total  1700  :  341.0
+Total  1800  :  360.0
+Total  1900  :  387.0
+Total  2000  :  409.0
+Total  2100  :  426.0
+Total  2200  :  445.0
+Total  2300  :  470.0
+Total  2400  :  489.0
+Total  2500  :  511.0
+Total  2600  :  535.0
+Total  2700  :  551.0
+Total  2800  :  574.0
+Total  2900  :  588.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  58.0
+Total  200  :  124.0
+Total  300  :  185.0
+Total  400  :  254.0
+Total  500  :  312.0
+Total  600  :  380.0
+Total  700  :  437.0
+Total  800  :  501.0
+Total  900  :  563.0
+Total  1000  :  606.0
+Total  1100  :  662.0
+Total  1200  :  719.0
+Total  1300  :  768.0
+Total  1400  :  824.0
+Total  1500  :  885.0
+Total  1600  :  948.0
+Total  1700  :  1004.0
+Total  1800  :  1067.0
+Total  1900  :  1117.0
+Total  2000  :  1186.0
+Total  2100  :  1251.0
+Total  2200  :  1300.0
+Total  2300  :  1365.0
+Total  2400  :  1425.0
+Total  2500  :  1488.0
+Total  2600  :  1555.0
+Total  2700  :  1610.0
+Total  2800  :  1668.0
+Total  2900  :  1717.0
+
+Validation hits@1: 0.20233333333333334
+Validation hits@10: 0.5933333333333334
+
+Epoch 101 Total loss: 47.266127
+Epoch 102 Total loss: 49.729165
+Epoch 103 Total loss: 46.649637
+Epoch 104 Total loss: 44.886275
+Epoch 105 Total loss: 45.067625
+Epoch 106 Total loss: 44.686962
+Epoch 107 Total loss: 45.096117
+Epoch 108 Total loss: 44.944838
+Epoch 109 Total loss: 44.733674
+Epoch 110 Total loss: 44.985375
+
+Hits@1:
+Total  0  :  0.0
+Total  100  :  22.0
+Total  200  :  44.0
+Total  300  :  59.0
+Total  400  :  89.0
+Total  500  :  102.0
+Total  600  :  124.0
+Total  700  :  142.0
+Total  800  :  165.0
+Total  900  :  184.0
+Total  1000  :  195.0
+Total  1100  :  211.0
+Total  1200  :  228.0
+Total  1300  :  248.0
+Total  1400  :  270.0
+Total  1500  :  288.0
+Total  1600  :  308.0
+Total  1700  :  326.0
+Total  1800  :  344.0
+Total  1900  :  367.0
+Total  2000  :  391.0
+Total  2100  :  410.0
+Total  2200  :  432.0
+Total  2300  :  455.0
+Total  2400  :  477.0
+Total  2500  :  500.0
+Total  2600  :  528.0
+Total  2700  :  547.0
+Total  2800  :  567.0
+Total  2900  :  588.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  64.0
+Total  200  :  130.0
+Total  300  :  191.0
+Total  400  :  264.0
+Total  500  :  325.0
+Total  600  :  392.0
+Total  700  :  451.0
+Total  800  :  519.0
+Total  900  :  578.0
+Total  1000  :  622.0
+Total  1100  :  678.0
+Total  1200  :  734.0
+Total  1300  :  789.0
+Total  1400  :  855.0
+Total  1500  :  919.0
+Total  1600  :  982.0
+Total  1700  :  1038.0
+Total  1800  :  1094.0
+Total  1900  :  1147.0
+Total  2000  :  1214.0
+Total  2100  :  1283.0
+Total  2200  :  1337.0
+Total  2300  :  1403.0
+Total  2400  :  1463.0
+Total  2500  :  1524.0
+Total  2600  :  1588.0
+Total  2700  :  1639.0
+Total  2800  :  1693.0
+Total  2900  :  1743.0
+
+Validation hits@1: 0.20333333333333334
+Validation hits@10: 0.6016666666666667
+
+Epoch 111 Total loss: 43.144098
+Epoch 112 Total loss: 43.959818
+Epoch 113 Total loss: 43.184838
+Epoch 114 Total loss: 40.979028
+Epoch 115 Total loss: 40.786653
+Epoch 116 Total loss: 42.681434
+Epoch 117 Total loss: 42.999129
+Epoch 118 Total loss: 40.291564
+Epoch 119 Total loss: 41.878668
+Epoch 120 Total loss: 41.105552
+
+Hits@1:
+Total  0  :  0.0
+Total  100  :  18.0
+Total  200  :  39.0
+Total  300  :  58.0
+Total  400  :  87.0
+Total  500  :  105.0
+Total  600  :  129.0
+Total  700  :  148.0
+Total  800  :  166.0
+Total  900  :  188.0
+Total  1000  :  204.0
+Total  1100  :  222.0
+Total  1200  :  239.0
+Total  1300  :  263.0
+Total  1400  :  285.0
+Total  1500  :  305.0
+Total  1600  :  323.0
+Total  1700  :  344.0
+Total  1800  :  364.0
+Total  1900  :  384.0
+Total  2000  :  411.0
+Total  2100  :  430.0
+Total  2200  :  452.0
+Total  2300  :  480.0
+Total  2400  :  497.0
+Total  2500  :  519.0
+Total  2600  :  550.0
+Total  2700  :  570.0
+Total  2800  :  588.0
+Total  2900  :  606.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  68.0
+Total  200  :  135.0
+Total  300  :  200.0
+Total  400  :  268.0
+Total  500  :  329.0
+Total  600  :  396.0
+Total  700  :  460.0
+Total  800  :  527.0
+Total  900  :  589.0
+Total  1000  :  626.0
+Total  1100  :  679.0
+Total  1200  :  738.0
+Total  1300  :  786.0
+Total  1400  :  846.0
+Total  1500  :  909.0
+Total  1600  :  977.0
+Total  1700  :  1034.0
+Total  1800  :  1091.0
+Total  1900  :  1141.0
+Total  2000  :  1208.0
+Total  2100  :  1276.0
+Total  2200  :  1328.0
+Total  2300  :  1392.0
+Total  2400  :  1454.0
+Total  2500  :  1515.0
+Total  2600  :  1579.0
+Total  2700  :  1637.0
+Total  2800  :  1690.0
+Total  2900  :  1736.0
+
+Validation hits@1: 0.20866666666666667
+Validation hits@10: 0.5986666666666667
+
+Epoch 121 Total loss: 40.651816
+Epoch 122 Total loss: 41.464661
+Epoch 123 Total loss: 39.504036
+Epoch 124 Total loss: 39.289229
+Epoch 125 Total loss: 38.203008
+Epoch 126 Total loss: 40.852647
+Epoch 127 Total loss: 38.674995
+Epoch 128 Total loss: 38.470331
+Epoch 129 Total loss: 40.077900
+Epoch 130 Total loss: 39.333524
+
+Hits@1:
+Total  0  :  0.0
+Total  100  :  21.0
+Total  200  :  43.0
+Total  300  :  62.0
+Total  400  :  90.0
+Total  500  :  104.0
+Total  600  :  131.0
+Total  700  :  151.0
+Total  800  :  175.0
+Total  900  :  198.0
+Total  1000  :  212.0
+Total  1100  :  234.0
+Total  1200  :  252.0
+Total  1300  :  269.0
+Total  1400  :  291.0
+Total  1500  :  311.0
+Total  1600  :  334.0
+Total  1700  :  350.0
+Total  1800  :  370.0
+Total  1900  :  391.0
+Total  2000  :  414.0
+Total  2100  :  430.0
+Total  2200  :  454.0
+Total  2300  :  476.0
+Total  2400  :  500.0
+Total  2500  :  521.0
+Total  2600  :  542.0
+Total  2700  :  557.0
+Total  2800  :  573.0
+Total  2900  :  589.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  64.0
+Total  200  :  130.0
+Total  300  :  194.0
+Total  400  :  261.0
+Total  500  :  322.0
+Total  600  :  390.0
+Total  700  :  450.0
+Total  800  :  514.0
+Total  900  :  578.0
+Total  1000  :  619.0
+Total  1100  :  676.0
+Total  1200  :  731.0
+Total  1300  :  783.0
+Total  1400  :  847.0
+Total  1500  :  913.0
+Total  1600  :  977.0
+Total  1700  :  1031.0
+Total  1800  :  1089.0
+Total  1900  :  1142.0
+Total  2000  :  1211.0
+Total  2100  :  1277.0
+Total  2200  :  1332.0
+Total  2300  :  1391.0
+Total  2400  :  1452.0
+Total  2500  :  1515.0
+Total  2600  :  1579.0
+Total  2700  :  1636.0
+Total  2800  :  1691.0
+Total  2900  :  1745.0
+
+Validation hits@1: 0.20366666666666666
+Validation hits@10: 0.6033333333333334
+
+Epoch 131 Total loss: 36.772712
+Epoch 132 Total loss: 37.005709
+Epoch 133 Total loss: 39.872061
+Epoch 134 Total loss: 38.413118
+Epoch 135 Total loss: 36.246878
+Epoch 136 Total loss: 36.502294
+Epoch 137 Total loss: 36.524146
+Epoch 138 Total loss: 36.835729
+Epoch 139 Total loss: 34.727849
+Epoch 140 Total loss: 37.055838
+
+Hits@1:
+Total  0  :  0.0
+Total  100  :  25.0
+Total  200  :  48.0
+Total  300  :  66.0
+Total  400  :  95.0
+Total  500  :  108.0
+Total  600  :  133.0
+Total  700  :  150.0
+Total  800  :  170.0
+Total  900  :  190.0
+Total  1000  :  208.0
+Total  1100  :  221.0
+Total  1200  :  241.0
+Total  1300  :  258.0
+Total  1400  :  282.0
+Total  1500  :  305.0
+Total  1600  :  328.0
+Total  1700  :  347.0
+Total  1800  :  370.0
+Total  1900  :  395.0
+Total  2000  :  419.0
+Total  2100  :  439.0
+Total  2200  :  463.0
+Total  2300  :  481.0
+Total  2400  :  501.0
+Total  2500  :  521.0
+Total  2600  :  544.0
+Total  2700  :  562.0
+Total  2800  :  582.0
+Total  2900  :  600.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  62.0
+Total  200  :  130.0
+Total  300  :  191.0
+Total  400  :  261.0
+Total  500  :  322.0
+Total  600  :  390.0
+Total  700  :  456.0
+Total  800  :  520.0
+Total  900  :  583.0
+Total  1000  :  630.0
+Total  1100  :  686.0
+Total  1200  :  743.0
+Total  1300  :  797.0
+Total  1400  :  860.0
+Total  1500  :  920.0
+Total  1600  :  980.0
+Total  1700  :  1037.0
+Total  1800  :  1102.0
+Total  1900  :  1156.0
+Total  2000  :  1227.0
+Total  2100  :  1294.0
+Total  2200  :  1348.0
+Total  2300  :  1409.0
+Total  2400  :  1470.0
+Total  2500  :  1533.0
+Total  2600  :  1600.0
+Total  2700  :  1654.0
+Total  2800  :  1711.0
+Total  2900  :  1759.0
+
+Validation hits@1: 0.20633333333333334
+Validation hits@10: 0.606
+
+Epoch 141 Total loss: 37.604943
+Epoch 142 Total loss: 36.849421
+Epoch 143 Total loss: 33.409907
+Epoch 144 Total loss: 38.085662
+Epoch 145 Total loss: 34.943539
+Epoch 146 Total loss: 34.601347
+Epoch 147 Total loss: 36.583201
+Epoch 148 Total loss: 34.013854
+Epoch   148: reducing learning rate of group 0 to 1.0000e-04.
+Epoch 149 Total loss: 35.885535
+Epoch 150 Total loss: 33.749843
+
+Hits@1:
+Total  0  :  0.0
+Total  100  :  26.0
+Total  200  :  49.0
+Total  300  :  63.0
+Total  400  :  90.0
+Total  500  :  103.0
+Total  600  :  130.0
+Total  700  :  147.0
+Total  800  :  163.0
+Total  900  :  180.0
+Total  1000  :  191.0
+Total  1100  :  211.0
+Total  1200  :  230.0
+Total  1300  :  252.0
+Total  1400  :  282.0
+Total  1500  :  303.0
+Total  1600  :  325.0
+Total  1700  :  346.0
+Total  1800  :  366.0
+Total  1900  :  390.0
+Total  2000  :  420.0
+Total  2100  :  439.0
+Total  2200  :  459.0
+Total  2300  :  481.0
+Total  2400  :  502.0
+Total  2500  :  523.0
+Total  2600  :  546.0
+Total  2700  :  564.0
+Total  2800  :  582.0
+Total  2900  :  599.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  66.0
+Total  200  :  134.0
+Total  300  :  202.0
+Total  400  :  269.0
+Total  500  :  335.0
+Total  600  :  403.0
+Total  700  :  469.0
+Total  800  :  537.0
+Total  900  :  604.0
+Total  1000  :  649.0
+Total  1100  :  704.0
+Total  1200  :  763.0
+Total  1300  :  817.0
+Total  1400  :  880.0
+Total  1500  :  943.0
+Total  1600  :  1006.0
+Total  1700  :  1064.0
+Total  1800  :  1125.0
+Total  1900  :  1181.0
+Total  2000  :  1254.0
+Total  2100  :  1320.0
+Total  2200  :  1372.0
+Total  2300  :  1432.0
+Total  2400  :  1492.0
+Total  2500  :  1551.0
+Total  2600  :  1614.0
+Total  2700  :  1671.0
+Total  2800  :  1727.0
+Total  2900  :  1780.0
+
+Validation hits@1: 0.20533333333333334
+Validation hits@10: 0.6123333333333333
+
+Epoch 151 Total loss: 32.586165
+Epoch 152 Total loss: 34.493794
+Epoch 153 Total loss: 30.824542
+Epoch 154 Total loss: 34.311879
+Epoch 155 Total loss: 34.926710
+Epoch 156 Total loss: 32.917213
+Epoch 157 Total loss: 31.984771
+Epoch 158 Total loss: 33.562350
+Epoch   158: reducing learning rate of group 0 to 1.0000e-05.
+Epoch 159 Total loss: 32.694678
+Epoch 160 Total loss: 30.902471
+
+Hits@1:
+Total  0  :  0.0
+Total  100  :  23.0
+Total  200  :  50.0
+Total  300  :  70.0
+Total  400  :  102.0
+Total  500  :  117.0
+Total  600  :  145.0
+Total  700  :  164.0
+Total  800  :  186.0
+Total  900  :  205.0
+Total  1000  :  217.0
+Total  1100  :  239.0
+Total  1200  :  254.0
+Total  1300  :  274.0
+Total  1400  :  290.0
+Total  1500  :  310.0
+Total  1600  :  332.0
+Total  1700  :  346.0
+Total  1800  :  367.0
+Total  1900  :  388.0
+Total  2000  :  412.0
+Total  2100  :  431.0
+Total  2200  :  449.0
+Total  2300  :  477.0
+Total  2400  :  497.0
+Total  2500  :  516.0
+Total  2600  :  540.0
+Total  2700  :  558.0
+Total  2800  :  579.0
+Total  2900  :  600.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  66.0
+Total  200  :  135.0
+Total  300  :  199.0
+Total  400  :  270.0
+Total  500  :  334.0
+Total  600  :  404.0
+Total  700  :  467.0
+Total  800  :  538.0
+Total  900  :  603.0
+Total  1000  :  647.0
+Total  1100  :  697.0
+Total  1200  :  755.0
+Total  1300  :  807.0
+Total  1400  :  872.0
+Total  1500  :  930.0
+Total  1600  :  996.0
+Total  1700  :  1060.0
+Total  1800  :  1124.0
+Total  1900  :  1179.0
+Total  2000  :  1248.0
+Total  2100  :  1317.0
+Total  2200  :  1370.0
+Total  2300  :  1429.0
+Total  2400  :  1491.0
+Total  2500  :  1555.0
+Total  2600  :  1617.0
+Total  2700  :  1681.0
+Total  2800  :  1732.0
+Total  2900  :  1785.0
+
+Validation hits@1: 0.20733333333333334
+Validation hits@10: 0.6153333333333333
+
+Epoch 161 Total loss: 33.113875
+Epoch 162 Total loss: 33.234284
+Epoch 163 Total loss: 30.262587
+Epoch 164 Total loss: 33.024790
+Epoch 165 Total loss: 31.781126
+Epoch 166 Total loss: 35.105968
+Epoch 167 Total loss: 31.589149
+Epoch 168 Total loss: 32.985894
+Epoch   168: reducing learning rate of group 0 to 1.0000e-06.
+Epoch 169 Total loss: 33.579139
+Epoch 170 Total loss: 31.772989
+
+Hits@1:
+Total  0  :  0.0
+Total  100  :  24.0
+Total  200  :  46.0
+Total  300  :  62.0
+Total  400  :  94.0
+Total  500  :  107.0
+Total  600  :  131.0
+Total  700  :  150.0
+Total  800  :  171.0
+Total  900  :  193.0
+Total  1000  :  208.0
+Total  1100  :  229.0
+Total  1200  :  247.0
+Total  1300  :  270.0
+Total  1400  :  292.0
+Total  1500  :  312.0
+Total  1600  :  331.0
+Total  1700  :  346.0
+Total  1800  :  362.0
+Total  1900  :  386.0
+Total  2000  :  410.0
+Total  2100  :  431.0
+Total  2200  :  453.0
+Total  2300  :  478.0
+Total  2400  :  499.0
+Total  2500  :  525.0
+Total  2600  :  550.0
+Total  2700  :  565.0
+Total  2800  :  584.0
+Total  2900  :  602.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  67.0
+Total  200  :  129.0
+Total  300  :  195.0
+Total  400  :  270.0
+Total  500  :  330.0
+Total  600  :  401.0
+Total  700  :  468.0
+Total  800  :  535.0
+Total  900  :  600.0
+Total  1000  :  640.0
+Total  1100  :  691.0
+Total  1200  :  743.0
+Total  1300  :  794.0
+Total  1400  :  859.0
+Total  1500  :  921.0
+Total  1600  :  981.0
+Total  1700  :  1036.0
+Total  1800  :  1100.0
+Total  1900  :  1154.0
+Total  2000  :  1228.0
+Total  2100  :  1291.0
+Total  2200  :  1342.0
+Total  2300  :  1401.0
+Total  2400  :  1467.0
+Total  2500  :  1534.0
+Total  2600  :  1598.0
+Total  2700  :  1655.0
+Total  2800  :  1713.0
+Total  2900  :  1765.0
+
+Validation hits@1: 0.207
+Validation hits@10: 0.6083333333333333
+
+Epoch 171 Total loss: 32.551988
+Epoch 172 Total loss: 30.978882
+Epoch 173 Total loss: 30.896144
+Epoch 174 Total loss: 31.572073
+Epoch   174: reducing learning rate of group 0 to 1.0000e-07.
+Epoch 175 Total loss: 31.846297
+Epoch 176 Total loss: 31.183976
+Epoch 177 Total loss: 31.254058
+Epoch 178 Total loss: 31.371895
+Epoch 179 Total loss: 33.095012
+Epoch 180 Total loss: 33.736863
+
+Hits@1:
+Total  0  :  0.0
+Total  100  :  20.0
+Total  200  :  49.0
+Total  300  :  62.0
+Total  400  :  93.0
+Total  500  :  112.0
+Total  600  :  141.0
+Total  700  :  156.0
+Total  800  :  173.0
+Total  900  :  196.0
+Total  1000  :  210.0
+Total  1100  :  229.0
+Total  1200  :  247.0
+Total  1300  :  269.0
+Total  1400  :  292.0
+Total  1500  :  309.0
+Total  1600  :  330.0
+Total  1700  :  346.0
+Total  1800  :  367.0
+Total  1900  :  388.0
+Total  2000  :  411.0
+Total  2100  :  431.0
+Total  2200  :  450.0
+Total  2300  :  477.0
+Total  2400  :  496.0
+Total  2500  :  518.0
+Total  2600  :  544.0
+Total  2700  :  564.0
+Total  2800  :  582.0
+Total  2900  :  601.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  62.0
+Total  200  :  126.0
+Total  300  :  191.0
+Total  400  :  266.0
+Total  500  :  330.0
+Total  600  :  402.0
+Total  700  :  469.0
+Total  800  :  533.0
+Total  900  :  596.0
+Total  1000  :  642.0
+Total  1100  :  696.0
+Total  1200  :  750.0
+Total  1300  :  802.0
+Total  1400  :  863.0
+Total  1500  :  921.0
+Total  1600  :  988.0
+Total  1700  :  1047.0
+Total  1800  :  1106.0
+Total  1900  :  1161.0
+Total  2000  :  1232.0
+Total  2100  :  1297.0
+Total  2200  :  1351.0
+Total  2300  :  1415.0
+Total  2400  :  1484.0
+Total  2500  :  1545.0
+Total  2600  :  1609.0
+Total  2700  :  1667.0
+Total  2800  :  1720.0
+Total  2900  :  1772.0
+
+Validation hits@1: 0.20766666666666667
+Validation hits@10: 0.6113333333333333
+
+Epoch   180: reducing learning rate of group 0 to 1.0000e-08.
+Epoch 181 Total loss: 32.650912
+Epoch 182 Total loss: 35.046276
+Epoch 183 Total loss: 32.473087
+Epoch 184 Total loss: 35.080808
+Epoch 185 Total loss: 33.121606
+Epoch 186 Total loss: 31.942540
+Epoch 187 Total loss: 32.533359
+Epoch 188 Total loss: 33.070558
+Epoch 189 Total loss: 33.930588
+Epoch 190 Total loss: 30.940397
+
+Hits@1:
+Total  0  :  0.0
+Total  100  :  22.0
+Total  200  :  46.0
+Total  300  :  60.0
+Total  400  :  92.0
+Total  500  :  106.0
+Total  600  :  129.0
+Total  700  :  148.0
+Total  800  :  167.0
+Total  900  :  191.0
+Total  1000  :  203.0
+Total  1100  :  223.0
+Total  1200  :  243.0
+Total  1300  :  263.0
+Total  1400  :  288.0
+Total  1500  :  304.0
+Total  1600  :  323.0
+Total  1700  :  337.0
+Total  1800  :  355.0
+Total  1900  :  378.0
+Total  2000  :  404.0
+Total  2100  :  423.0
+Total  2200  :  447.0
+Total  2300  :  471.0
+Total  2400  :  494.0
+Total  2500  :  517.0
+Total  2600  :  539.0
+Total  2700  :  557.0
+Total  2800  :  578.0
+Total  2900  :  594.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  72.0
+Total  200  :  134.0
+Total  300  :  195.0
+Total  400  :  264.0
+Total  500  :  323.0
+Total  600  :  395.0
+Total  700  :  457.0
+Total  800  :  526.0
+Total  900  :  592.0
+Total  1000  :  631.0
+Total  1100  :  686.0
+Total  1200  :  743.0
+Total  1300  :  792.0
+Total  1400  :  854.0
+Total  1500  :  910.0
+Total  1600  :  977.0
+Total  1700  :  1034.0
+Total  1800  :  1095.0
+Total  1900  :  1144.0
+Total  2000  :  1214.0
+Total  2100  :  1278.0
+Total  2200  :  1333.0
+Total  2300  :  1390.0
+Total  2400  :  1452.0
+Total  2500  :  1517.0
+Total  2600  :  1582.0
+Total  2700  :  1638.0
+Total  2800  :  1692.0
+Total  2900  :  1737.0
+
+Validation hits@1: 0.205
+Validation hits@10: 0.5993333333333334
+
+Epoch 191 Total loss: 33.099950
+Epoch 192 Total loss: 31.270499
+Epoch 193 Total loss: 30.828851
+Epoch 194 Total loss: 31.643866
+Epoch 195 Total loss: 31.679511
+Epoch 196 Total loss: 34.613851
+Epoch 197 Total loss: 33.249679
+Epoch 198 Total loss: 33.397468
+Epoch 199 Total loss: 34.546520
+Epoch 200 Total loss: 30.864661
+
+Hits@1:
+Total  0  :  0.0
+Total  100  :  28.0
+Total  200  :  48.0
+Total  300  :  67.0
+Total  400  :  98.0
+Total  500  :  112.0
+Total  600  :  135.0
+Total  700  :  152.0
+Total  800  :  172.0
+Total  900  :  196.0
+Total  1000  :  211.0
+Total  1100  :  232.0
+Total  1200  :  247.0
+Total  1300  :  272.0
+Total  1400  :  293.0
+Total  1500  :  311.0
+Total  1600  :  328.0
+Total  1700  :  349.0
+Total  1800  :  372.0
+Total  1900  :  394.0
+Total  2000  :  418.0
+Total  2100  :  441.0
+Total  2200  :  462.0
+Total  2300  :  487.0
+Total  2400  :  508.0
+Total  2500  :  527.0
+Total  2600  :  553.0
+Total  2700  :  570.0
+Total  2800  :  588.0
+Total  2900  :  605.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  71.0
+Total  200  :  139.0
+Total  300  :  203.0
+Total  400  :  275.0
+Total  500  :  331.0
+Total  600  :  398.0
+Total  700  :  462.0
+Total  800  :  532.0
+Total  900  :  594.0
+Total  1000  :  633.0
+Total  1100  :  686.0
+Total  1200  :  744.0
+Total  1300  :  797.0
+Total  1400  :  858.0
+Total  1500  :  920.0
+Total  1600  :  984.0
+Total  1700  :  1042.0
+Total  1800  :  1104.0
+Total  1900  :  1154.0
+Total  2000  :  1220.0
+Total  2100  :  1287.0
+Total  2200  :  1340.0
+Total  2300  :  1398.0
+Total  2400  :  1459.0
+Total  2500  :  1528.0
+Total  2600  :  1588.0
+Total  2700  :  1642.0
+Total  2800  :  1698.0
+Total  2900  :  1749.0
+
+Validation hits@1: 0.20866666666666667
+Validation hits@10: 0.602
+
+
+Final Validation results on 100 random samples
+Hits@1:
+Total  0  :  0.0
+Total  100  :  22.0
+Total  200  :  44.0
+Total  300  :  62.0
+Total  400  :  94.0
+Total  500  :  113.0
+Total  600  :  140.0
+Total  700  :  160.0
+Total  800  :  179.0
+Total  900  :  202.0
+Total  1000  :  219.0
+Total  1100  :  239.0
+Total  1200  :  253.0
+Total  1300  :  274.0
+Total  1400  :  297.0
+Total  1500  :  317.0
+Total  1600  :  336.0
+Total  1700  :  359.0
+Total  1800  :  382.0
+Total  1900  :  400.0
+Total  2000  :  424.0
+Total  2100  :  443.0
+Total  2200  :  466.0
+Total  2300  :  494.0
+Total  2400  :  511.0
+Total  2500  :  533.0
+Total  2600  :  555.0
+Total  2700  :  573.0
+Total  2800  :  595.0
+Total  2900  :  609.0
+
+Hits@10:
+Total  0  :  0.0
+Total  100  :  62.0
+Total  200  :  128.0
+Total  300  :  188.0
+Total  400  :  260.0
+Total  500  :  322.0
+Total  600  :  393.0
+Total  700  :  452.0
+Total  800  :  518.0
+Total  900  :  583.0
+Total  1000  :  624.0
+Total  1100  :  681.0
+Total  1200  :  737.0
+Total  1300  :  787.0
+Total  1400  :  850.0
+Total  1500  :  911.0
+Total  1600  :  976.0
+Total  1700  :  1031.0
+Total  1800  :  1097.0
+Total  1900  :  1149.0
+Total  2000  :  1217.0
+Total  2100  :  1281.0
+Total  2200  :  1335.0
+Total  2300  :  1395.0
+Total  2400  :  1459.0
+Total  2500  :  1522.0
+Total  2600  :  1591.0
+Total  2700  :  1649.0
+Total  2800  :  1703.0
+Total  2900  :  1758.0
+
+Validation hits@1: 0.212
+Validation hits@10: 0.6056666666666667
