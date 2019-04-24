@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="668bab51-2bdd-4fb7-8c6f-57ba24162b7d" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/scripts/binary/binary.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/binary/binary.py" afterDir="false" />
-    </list>
+    <list default="true" id="668bab51-2bdd-4fb7-8c6f-57ba24162b7d" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,7 +25,7 @@
       <file leaf-file-name="binary.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/scripts/binary/binary.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2113">
+            <state relative-caret-position="15">
               <caret line="196" column="9" selection-start-line="196" selection-end-line="196" selection-end-column="9" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
@@ -64,6 +62,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -86,7 +85,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -158,17 +156,36 @@
       <window_info anchor="bottom" id="Debug" order="7" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="9" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="8" weight="0.25" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="bottom" id="Message" order="4" />
-      <window_info anchor="bottom" id="Cvs" order="8" weight="0.25" />
       <window_info anchor="bottom" id="Find" order="5" />
+      <window_info anchor="bottom" id="Message" order="4" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/scripts/model_transe_lstm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/binary/binary.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2940">
+          <caret line="196" column="9" selection-start-line="196" selection-end-line="196" selection-end-column="9" />
+          <folding>
+            <element signature="e#0#37#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/model_transe_lstm.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -213,7 +230,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/binary/binary.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2113">
+        <state relative-caret-position="15">
           <caret line="196" column="9" selection-start-line="196" selection-end-line="196" selection-end-column="9" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
