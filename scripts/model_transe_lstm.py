@@ -393,6 +393,6 @@ def run_transe(num_epochs):
 
 if __name__ == "__main__":
 
-    run_transe(200)
+    #run_transe(200)
     model = torch.load("model_transe_lstm_300_adam.pt")
     run_transe_validation()
