@@ -7,6 +7,8 @@ from torch.autograd import Variable
 import collections
 from torch import optim
 from torch.utils.data import DataLoader, TensorDataset
+from string import punctuation
+from collections import Counter
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -23,7 +25,16 @@ with open('../data/relations_small', 'r') as f:
 with open('../data/objects_small', 'r') as f:
     obs = f.read()
 
-from string import punctuation
+
+#OOV Dataset read
+with open('../data/subjects_new', 'r') as f:
+    subs_oov = f.read()
+
+with open('../data/relations_new', 'r') as f:
+    rels_oov = f.read()
+
+with open('../data/objects_new', 'r') as f:
+    objs_oov = f.read()
 
 
 #Data Preprocessing
@@ -67,8 +78,6 @@ for each in obs:
     ob_ints.append([vocab_to_int[word] for word in each.split()])
 
 #Calculating max length of subject, object, relation
-from collections import Counter
-
 sub_lens = Counter([len(x) for x in sub_ints])
 rel_lens = Counter([len(x) for x in rel_ints])
 ob_lens = Counter([len(x) for x in ob_ints])
@@ -92,17 +101,13 @@ to = []
 
 for i in range(len(subs)):
     if len(sub_ints[i])*len(rel_ints[i])*len(ob_ints[i]) > 0:
-      ts.append(sub_ints[i])
-      tr.append(rel_ints[i])
-      to.append(ob_ints[i])
+        ts.append(sub_ints[i])
+        tr.append(rel_ints[i])
+        to.append(ob_ints[i])
 
 sub_ints = np.array(ts)
 rel_ints = np.array(tr)
 ob_ints = np.array(to)
-
-
-from collections import Counter
-
 
 sub_lens = Counter([len(x) for x in sub_ints])
 print("Zero-length subs: {}".format(sub_lens[0]))
@@ -148,7 +153,6 @@ train_sub, val_sub = sub_features[:split_index], sub_features[split_index:]
 train_rel, val_rel = rel_features[:split_index], rel_features[split_index:]
 train_ob, val_ob = ob_features[:split_index], ob_features[split_index:]
 
-
 sub_dim = train_sub.shape[1]
 rel_dim = train_rel.shape[1]
 obj_dim = train_ob.shape[1]
@@ -156,9 +160,6 @@ obj_dim = train_ob.shape[1]
 sub_len = val_sub.shape[0]
 rel_len = val_rel.shape[0]
 obj_len = val_ob.shape[0]
-
-spo_train = np.concatenate([train_sub, train_rel, train_ob], axis=-1)
-spo_valid = np.concatenate([val_sub, val_rel, val_ob], axis=-1)
 
 # Negative Samples
 neg_sub1 = np.zeros(train_sub.shape)
@@ -177,14 +178,77 @@ for i in range(train_len):
         neg_rel1[i][:] = train_rel[i][:]
         neg_ob1[i][:] = train_ob[np.random.randint(0, train_len)][:]
 
+n_words = len(vocab_to_int) + 1  # Add 1 for 0 added to vocab
 
-spo_neg1 = np.concatenate([neg_sub1, neg_rel1, neg_ob1], axis=-1)
+embed_size = 300
+
+w2v_embed = np.ndarray([n_words, embed_size])
+
+for i in range(n_words - 1):
+    if words[i] not in w2v_model:
+        w2v_embed[vocab_to_int[words[i]]] = np.array([0] * embed_size)
+    else:
+        w2v_embed[vocab_to_int[words[i]]] = w2v_model[words[i]]
+
+spo_train = np.concatenate([train_sub, train_rel, train_ob], axis=1)
+spo_valid = np.concatenate([val_sub, val_rel, val_ob], axis=1)
+spo_neg1 = np.concatenate([neg_sub1, neg_rel1, neg_ob1], axis=1)
+
+#OOV
+subs_oov1 = []
+for each in subs_oov:
+    each = each.lower()
+    subs_oov.append([word for word in each.split()])
+
+rels_oov1 = []
+for each in rels_oov:
+    each = each.lower()
+    rels_oov.append([word for word in each.split()])
+
+objs_oov1 = []
+for each in objs_oov:
+    each = each.lower()
+    objs_oov.append([word for word in each.split()])
+
+#Sampling 1k values
+n_samples = 1000
+arr = np.arange(0, subs_oov.size(0)).tolist()
+arr_list = random.sample(arr, n_samples)
+subs_sample_oov = []
+rels_sample_oov = []
+objs_sample_oov = []
+
+for i in range(len(arr_list)):
+    subs_sample_oov[i][:] = subs_oov1[arr_list[i]][:]
+    rels_sample_oov[i][:] = rels_oov1[arr_list[i]][:]
+    objs_sample_oov[i][:] = objs_oov1[arr_list[i]][:]
+
+#Assuming max length of OOV data sequence is same as max len of Original data sequence
+#Embedding of OOV Samples
+subs_oov_e = np.zeros((n_samples, sub_dim, embed_size))
+rels_oov_e = np.zeros((n_samples, rel_dim, embed_size))
+objs_oov_e = np.zeros((n_samples, obj_dim, embed_size))
+
+for i in range(n_samples):
+    for j in range(sub_dim):
+        if subs_sample_oov[i][j] in w2v_model:
+            subs_oov_e[i][j][:] = w2v_model[subs_sample_oov[i][j]]
+
+for i in range(n_samples):
+    for j in range(rel_dim):
+        if rels_sample_oov[i][j] in w2v_model:
+            rels_oov_e[i][j][:] = w2v_model[rels_sample_oov[i][j]]
+
+for i in range(n_samples):
+    for j in range(obj_dim):
+        if objs_sample_oov[i][j] in w2v_model:
+            objs_oov_e[i][j][:] = w2v_model[objs_sample_oov[i][j]]
 
 
 #Model Class
 class Model(nn.Module):
 
-    def __init__(self, vocab_size, embedding_dim, weight_matrix, hidden_dim, num_layers, p_dropout, batch_size, sub_dim, rel_dim, obj_dim):
+    def __init__(self, vocab_size, embedding_dim, hidden_dim, num_layers, p_dropout, batch_size, sub_dim, rel_dim, obj_dim):
 
         super(Model, self).__init__()
 
@@ -196,25 +260,11 @@ class Model(nn.Module):
         self.obj_dim = obj_dim
         self.rel_dim = rel_dim
 
-        self.embedding_s = nn.Embedding(vocab_size, embedding_dim)
-        self.embedding_p = nn.Embedding(vocab_size, embedding_dim)
-        self.embedding_o = nn.Embedding(vocab_size, embedding_dim)
-        self.initialize_embeddings(weight_matrix)
-        self.embedding_s.weight.requires_grad = False
-        self.embedding_p.weight.requires_grad = False
-        self.embedding_o.weight.requires_grad = False
-
         self.lstm_s = nn.LSTM(self.embedding_dim, hidden_dim, num_layers, batch_first=True, bidirectional=False)
         self.lstm_p = nn.LSTM(self.embedding_dim, hidden_dim, num_layers, batch_first=True, bidirectional=False)
         self.lstm_o = nn.LSTM(self.embedding_dim, hidden_dim, num_layers, batch_first=True, bidirectional=False)
         self.linear = nn.Linear(hidden_dim, vocab_size)
         self.dropout = nn.Dropout(p=p_dropout)
-
-    def initialize_embeddings(self, weight_matrix):
-
-        self.embedding_s.weight = nn.Parameter(weight_matrix)
-        self.embedding_p.weight = nn.Parameter(weight_matrix)
-        self.embedding_o.weight = nn.Parameter(weight_matrix)
 
     def forward(self, sub, rel, obj, batch_size):
 
@@ -227,14 +277,9 @@ class Model(nn.Module):
         h0_obj = torch.zeros(self.num_layers, batch_size, self.hidden_size).to(device)
         c0_obj = torch.zeros(self.num_layers, batch_size, self.hidden_size).to(device)
 
-        sub = self.embedding_s(sub)
-        rel = self.embedding_p(rel)
-        obj = self.embedding_o(obj)
-
         lstm_sub, _ = self.lstm_s(sub, (h0_sub, c0_sub))
         lstm_rel, _ = self.lstm_p(rel, (h0_rel, c0_rel))
         lstm_obj, _ = self.lstm_o(obj, (h0_obj, c0_obj))
-
 
         lstm_sub = self.dropout(lstm_sub)
         lstm_rel = self.dropout(lstm_rel)
@@ -245,7 +290,7 @@ class Model(nn.Module):
         lstm_obj = lstm_obj[:, self.obj_dim-1:, :]
 
         score = torch.sum((lstm_sub + lstm_rel - lstm_obj)**2, -1)
-        return score.view(-1,1)
+        return score.view(-1, 1)
 
 
 batch_size = 200
@@ -265,19 +310,11 @@ neg_dataset = DataLoader(neg_dataset1, batch_size=batch_size, shuffle=True, drop
 p_dropout = 0.5
 n_words = len(vocab_to_int) + 1
 embed_size = 300
-weights_matrix = np.zeros((n_words,embed_size), dtype=np.float)
+weights_matrix = np.zeros((n_words, embed_size), dtype=np.float)
 hidden_size = 300
 num_layers = 1
 
-
-for i, word in enumerate(words):
-    try:
-        weights_matrix[int(i)] = w2v_model[word]
-    except KeyError:
-        weights_matrix[int(i)] = np.array([0] * embed_size)
-
-weights_matrix = torch.from_numpy(weights_matrix).float()
-model = Model(n_words, embed_size, weights_matrix, hidden_size, num_layers, p_dropout, batch_size, sub_dim, rel_dim, obj_dim).to(device)
+model = Model(n_words, embed_size, hidden_size, num_layers, p_dropout, batch_size, sub_dim, rel_dim, obj_dim).to(device)
 print(model)
 optimizer = optim.Adam(model.parameters(), lr=0.01)
 scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min',verbose=True,patience=5,factor=0.1)
@@ -289,11 +326,15 @@ def train(spo, sno):
     zero = torch.FloatTensor([0.0])
     sub, pred, obj = torch.split(spo, [sub_dim, rel_dim, obj_dim], dim=1)
     neg_sub, neg_pred, neg_obj = torch.split(sno, [sub_dim, rel_dim, obj_dim], dim=1)
-    criterion = lambda pos, neg : torch.sum(torch.max(Variable(zero).to(device), 1 + pos - neg))
+
+    sub_e, pred_e, obj_e = get_embedding_vectors(sub, pred, obj)
+    neg_sub_e, neg_pred_e, neg_obj_e = get_embedding_vectors(neg_sub, neg_pred, neg_obj)
+
+    criterion = lambda pos, neg: torch.sum(torch.max(Variable(zero).to(device), 1 + pos - neg))
     optimizer.zero_grad()
 
-    pos_score = model(Variable(sub).to(device), Variable(pred).to(device), Variable(obj).to(device), batch_size)
-    neg_score = model(Variable(neg_sub).to(device), Variable(neg_pred).to(device), Variable(neg_obj).to(device), batch_size)
+    pos_score = model(Variable(sub_e).to(device), Variable(pred_e).to(device), Variable(obj_e).to(device), batch_size)
+    neg_score = model(Variable(neg_sub_e).to(device), Variable(neg_pred_e).to(device), Variable(neg_obj_e).to(device), batch_size)
     loss = criterion(pos_score, neg_score)
     loss.backward()
     optimizer.step()
@@ -305,7 +346,6 @@ def train(spo, sno):
 def hitsatk_transe(spo, k):
 
     total = 0.0
-
     s, p, o = torch.split(spo, [sub_dim, rel_dim, obj_dim], dim=1)
 
     o2 = torch.unique(o, dim=0)
@@ -315,7 +355,7 @@ def hitsatk_transe(spo, k):
 
         s1 = s[i1][:]
         p1 = p[i1][:]
-        arr = np.arange(0,o2.size(0)).tolist()
+        arr = np.arange(0, o2.size(0)).tolist()
 
         #Taking 100 random samples including the actual object
         arr_list = random.sample(arr, 99)
@@ -328,9 +368,11 @@ def hitsatk_transe(spo, k):
         score = dict()
         #Looping through the 100 samples to get the score of each sample
         obj_val = o1.view(100,-1)
-        sub_val = s1.repeat(100).view(100,-1)
-        pred_val = p1.repeat(100).view(100,-1)
-        output = model(Variable(sub_val), Variable(pred_val), Variable(obj_val), 100)
+        sub_val = s1.repeat(100).view(100, -1)
+        pred_val = p1.repeat(100).view(100, -1)
+
+        sub_val_e, pred_val_e, obj_val_e = get_embedding_vectors(sub_val, pred_val, obj_val)
+        output = model(Variable(sub_val_e), Variable(pred_val_e), Variable(obj_val_e), 100)
 
         for m in range(len(output)):
             score[m] = output[m]
@@ -340,7 +382,7 @@ def hitsatk_transe(spo, k):
         sorted_dict = collections.OrderedDict(sorted_x)
         sorted_key = list(sorted_dict.keys())
 
-            #Checking for hits in top k indexes
+        #Checking for hits in top k indexes
         for a in range(k):
             out = sorted_key[a]
             val1 = o1[out][:].cpu().numpy()
@@ -353,6 +395,57 @@ def hitsatk_transe(spo, k):
     return total/len(o)
 
 
+#Validation hits_OOV
+def hitsatk_transe_oov(sub_oov_e, rel_oov_e, obj_oov_e, k):
+
+    total = 0.0
+
+    o2 = torch.unique(obj_oov_e, dim=0)
+    model.eval()
+    #Looping through all the subjects
+    for i1 in range(len(sub_oov_e)):
+
+        s1 = sub_oov_e[i1][:][:]
+        p1 = rel_oov_e[i1][:][:]
+        arr = np.arange(0, obj_oov_e.size(0)).tolist()
+
+        #Taking 100 random samples including the actual object
+        arr_list = random.sample(arr, 99)
+        o1 = torch.zeros((100, o2.size(1)), dtype = torch.long)
+        for l in range(len(arr_list)):
+            o1[l][:][:] = o2[arr_list[l]][:][:]
+        o1[99][:][:] = obj_oov_e[i1][:][:]
+        o1 = o1.to(device)
+
+        score = dict()
+        #Looping through the 100 samples to get the score of each sample
+        obj_val_e = o1.view(100,-1, embed_size)
+        sub_val_e = s1.repeat(100).view(100, -1, embed_size)
+        pred_val_e = p1.repeat(100).view(100, -1, embed_size)
+
+        output = model(Variable(sub_val_e), Variable(pred_val_e), Variable(obj_val_e), 100)
+
+        for m in range(len(output)):
+            score[m] = output[m]
+
+        #Sorting according to scores and getting the indexes of those scores
+        sorted_x = sorted(score.items(), key=lambda kv: kv[1])
+        sorted_dict = collections.OrderedDict(sorted_x)
+        sorted_key = list(sorted_dict.keys())
+
+        #Checking for hits in top k indexes
+        for a in range(k):
+            out = sorted_key[a]
+            val1 = o1[out][:][:].cpu().numpy()
+            val2 = obj_oov_e[i1][:][:].cpu().numpy()
+            if (val1 == val2).all():
+                total += 1.0
+        if i1%100 == 0:
+            print("Total ", i1, " : ",total)
+    print("\n")
+    return total/len(obj_oov_e)
+
+
 def run_transe_validation():
 
     print("\nHits@1:")
@@ -360,8 +453,12 @@ def run_transe_validation():
     print("\nHits@10:")
     hits10 = hitsatk_transe(spo_valid, 10)
 
-    print("Validation hits@1: ", hits1)
-    print("Validation hits@10: ", hits10)
+    print("\nHits@1 OOV:")
+    hits1_oov = hitsatk_transe_oov(subs_oov_e, rels_oov_e, objs_oov_e, 1)
+    print("\nHits@10 OOV:")
+    hits10_oov = hitsatk_transe_oov(subs_oov_e, rels_oov_e, objs_oov_e, 10)
+    print("Validation hits@1: ", hits1_oov)
+    print("Validation hits@10: ", hits10_oov)
     print("\n")
 
     return hits1, hits10
@@ -378,9 +475,9 @@ def run_transe(num_epochs):
         neg_iter = iter(neg_dataset)
 
         for j in range(len(train_dataset)):
-            p,z_p = next(train_iter)
-            n,z_n = next(neg_iter)
-            epoch_loss += train(p, n)
+            p, z_p = next(train_iter)
+            n, z_n = next(neg_iter)
+            epoch_loss += train(p, n, w2v_embed)
 
         scheduler.step(epoch_loss/total_batches)
         print ("Epoch %d Total loss: %f" % (i+1, epoch_loss/total_batches))
@@ -391,8 +488,30 @@ def run_transe(num_epochs):
                 torch.save(model, "model_transe_lstm_300_adam.pt")
 
 
+def get_embedding_vectors(sub, pred, obj):
+    sub_dim = sub.size(1)
+    pred_dim = pred.size(1)
+    obj_dim = obj.size(1)
+    sub_e = torch.zeros((len(sub), sub_dim, embed_size))
+    pred_e = torch.zeros((len(pred), pred_dim, embed_size))
+    obj_e = torch.zeros((len(obj), obj_dim, embed_size))
+
+    for s in range(len(sub)):
+        for q in range(sub_dim):
+            sub_e[s][q][:] = w2v_embed[sub[s][q]]
+
+    for s in range(len(pred)):
+        for q in range(rel_dim):
+            pred_e[s][q][:] = w2v_embed[pred[s][q]]
+
+    for s in range(len(obj)):
+        for q in range(obj_dim):
+            obj_e[s][q][:] = w2v_embed[obj[s][q]]
+
+    return sub_e, pred_e, obj_e
+
 if __name__ == "__main__":
 
-    #run_transe(200)
+    run_transe(200)
     model = torch.load("model_transe_lstm_300_adam.pt")
     run_transe_validation()
