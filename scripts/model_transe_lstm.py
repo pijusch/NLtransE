@@ -9,11 +9,12 @@ from torch import optim
 from torch.utils.data import DataLoader, TensorDataset
 from string import punctuation
 from collections import Counter
-
+random.seed(42)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 #Loading pretrained Google Word2Vec Model
 w2v_model = gensim.models.KeyedVectors.load_word2vec_format('./GoogleNews-vectors-negative300.bin', binary=True)
+#w2v_model = dict()
 
 #Small Dataset read
 with open('../data/subjects_small', 'r') as f:
@@ -48,6 +49,15 @@ rels = all_text.split('\n')
 
 all_text = ''.join([c for c in obs if c not in punctuation])
 obs = all_text.split('\n')
+
+all_text = ''.join([c for c in subs_oov if c not in punctuation])
+subs_oov = all_text.split('\n')
+
+all_text = ''.join([c for c in rels_oov if c not in punctuation])
+rels_oov = all_text.split('\n')
+
+all_text = ''.join([c for c in objs_oov if c not in punctuation])
+objs_oov = all_text.split('\n')
 
 all_text = ' '.join(subs)
 all_text += ' '.join(rels)
@@ -198,30 +208,30 @@ spo_neg1 = np.concatenate([neg_sub1, neg_rel1, neg_ob1], axis=1)
 subs_oov1 = []
 for each in subs_oov:
     each = each.lower()
-    subs_oov.append([word for word in each.split()])
+    subs_oov1.append([word for word in each.split()])
 
 rels_oov1 = []
 for each in rels_oov:
     each = each.lower()
-    rels_oov.append([word for word in each.split()])
+    rels_oov1.append([word for word in each.split()])
 
 objs_oov1 = []
 for each in objs_oov:
     each = each.lower()
-    objs_oov.append([word for word in each.split()])
+    objs_oov1.append([word for word in each.split()])
 
 #Sampling 1k values
 n_samples = 1000
-arr = np.arange(0, subs_oov.size(0)).tolist()
+arr = np.arange(0, len(subs_oov1)).tolist()
 arr_list = random.sample(arr, n_samples)
 subs_sample_oov = []
 rels_sample_oov = []
 objs_sample_oov = []
 
 for i in range(len(arr_list)):
-    subs_sample_oov[i][:] = subs_oov1[arr_list[i]][:]
-    rels_sample_oov[i][:] = rels_oov1[arr_list[i]][:]
-    objs_sample_oov[i][:] = objs_oov1[arr_list[i]][:]
+    subs_sample_oov.append(subs_oov1[arr_list[i]][:])
+    rels_sample_oov.append(rels_oov1[arr_list[i]][:])
+    objs_sample_oov.append(objs_oov1[arr_list[i]][:])
 
 #Assuming max length of OOV data sequence is same as max len of Original data sequence
 #Embedding of OOV Samples
@@ -230,17 +240,20 @@ rels_oov_e = np.zeros((n_samples, rel_dim, embed_size))
 objs_oov_e = np.zeros((n_samples, obj_dim, embed_size))
 
 for i in range(n_samples):
-    for j in range(sub_dim):
+    current_sample_len = len(subs_sample_oov[i])
+    for j in range(current_sample_len):
         if subs_sample_oov[i][j] in w2v_model:
             subs_oov_e[i][j][:] = w2v_model[subs_sample_oov[i][j]]
 
 for i in range(n_samples):
-    for j in range(rel_dim):
+    current_sample_len = len(rels_sample_oov[i])
+    for j in range(current_sample_len):
         if rels_sample_oov[i][j] in w2v_model:
             rels_oov_e[i][j][:] = w2v_model[rels_sample_oov[i][j]]
 
 for i in range(n_samples):
-    for j in range(obj_dim):
+    current_sample_len = len(objs_sample_oov[i])
+    for j in range(current_sample_len):
         if objs_sample_oov[i][j] in w2v_model:
             objs_oov_e[i][j][:] = w2v_model[objs_sample_oov[i][j]]
 
@@ -411,7 +424,7 @@ def hitsatk_transe_oov(sub_oov_e, rel_oov_e, obj_oov_e, k):
 
         #Taking 100 random samples including the actual object
         arr_list = random.sample(arr, 99)
-        o1 = torch.zeros((100, o2.size(1)), dtype = torch.long)
+        o1 = torch.zeros((100, o2.size(1)), dtype=torch.long)
         for l in range(len(arr_list)):
             o1[l][:][:] = o2[arr_list[l]][:][:]
         o1[99][:][:] = obj_oov_e[i1][:][:]
@@ -419,7 +432,7 @@ def hitsatk_transe_oov(sub_oov_e, rel_oov_e, obj_oov_e, k):
 
         score = dict()
         #Looping through the 100 samples to get the score of each sample
-        obj_val_e = o1.view(100,-1, embed_size)
+        obj_val_e = o1.view(100, -1, embed_size)
         sub_val_e = s1.repeat(100).view(100, -1, embed_size)
         pred_val_e = p1.repeat(100).view(100, -1, embed_size)
 
@@ -477,7 +490,7 @@ def run_transe(num_epochs):
         for j in range(len(train_dataset)):
             p, z_p = next(train_iter)
             n, z_n = next(neg_iter)
-            epoch_loss += train(p, n, w2v_embed)
+            epoch_loss += train(p, n)
 
         scheduler.step(epoch_loss/total_batches)
         print ("Epoch %d Total loss: %f" % (i+1, epoch_loss/total_batches))
@@ -492,9 +505,9 @@ def get_embedding_vectors(sub, pred, obj):
     sub_dim = sub.size(1)
     pred_dim = pred.size(1)
     obj_dim = obj.size(1)
-    sub_e = torch.zeros((len(sub), sub_dim, embed_size))
-    pred_e = torch.zeros((len(pred), pred_dim, embed_size))
-    obj_e = torch.zeros((len(obj), obj_dim, embed_size))
+    sub_e = np.zeros((len(sub), sub_dim, embed_size))
+    pred_e = np.zeros((len(pred), pred_dim, embed_size))
+    obj_e = np.zeros((len(obj), obj_dim, embed_size))
 
     for s in range(len(sub)):
         for q in range(sub_dim):
@@ -508,7 +521,11 @@ def get_embedding_vectors(sub, pred, obj):
         for q in range(obj_dim):
             obj_e[s][q][:] = w2v_embed[obj[s][q]]
 
+    sub_e = torch.from_numpy(sub_e).float()
+    pred_e = torch.from_numpy(pred_e).float()
+    obj_e = torch.from_numpy(obj_e).float()
     return sub_e, pred_e, obj_e
+
 
 if __name__ == "__main__":
 
